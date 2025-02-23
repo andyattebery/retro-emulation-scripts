@@ -3,9 +3,13 @@
 # Directory Paths
 SOURCE_BIOS_DIR="nas-01:/mnt/storage/Games/System Files"
 SOURCE_ROMS_DIR="nas-01:/mnt/storage/Games/ROMs"
+
+EMUDECK_ROOT_DIR="/run/media/SDCARDNAME/"
+ESDE_BIOS_DIR="/Volumes/Untitled/BIOS"
+ESDE_ROMS_DIR="/Volumes/Untitled/ES-DE ROMs"
 MUOS_ROOT_DIR="/Volumes/SD2"
 MINUI_ROOT_DIR="/Volumes/MINUI"
-ESDE_ROMS_DIR="/Volumes/Untitled/ES-DE ROMs"
+
 
 # System Constants
 readonly ARCADE="ARCADE"
@@ -255,11 +259,11 @@ declare -a ENABLED_ESDE_SYSTEMS=(
   $NINTENDO_GAMECUBE
   $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
   $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SWITCH
+  # $NINTENDO_SWITCH
   $NINTENDO_WII
   $NINTENDO_WIIU
   $SEGA_32X
-  # $SEGA_CD
+  $SEGA_CD
   $SEGA_DREAMCAST
   $SEGA_GAME_GEAR
   $SEGA_GENESIS
@@ -267,6 +271,10 @@ declare -a ENABLED_ESDE_SYSTEMS=(
   $SEGA_SG_1000
   $SONY_PLAYSTATION
 )
+
+get_system_esde_bios_directory(){
+  echo "$ESDE_BIOS_DIR"
+}
 
 declare -rA SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP=(
   [$ARCADE]='arcade'
@@ -321,13 +329,101 @@ get_system_esde_roms_directory(){
 }
 
 copy_to_esde() {
+  copy_bios_files ENABLED_ESDE_SYSTEMS "get_system_esde_bios_directory"
   copy_rom_files ENABLED_ESDE_SYSTEMS "get_system_esde_roms_directory" false
+}
+
+# EmuDeck (https://emudeck.github.io)
+declare -a ENABLED_EMUDECK_SYSTEMS=(
+  $NINTENDO_64
+  $NINTENDO_FAMICOM_DISK_SYSTEM
+  $NINTENDO_GAME_BOY_ADVANCE
+  $NINTENDO_GAME_BOY_COLOR
+  $NINTENDO_GAME_BOY
+  $NINTENDO_GAMECUBE
+  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
+  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
+  # $NINTENDO_SWITCH
+  $NINTENDO_WII
+  $NINTENDO_WIIU
+  $SEGA_32X
+  $SEGA_CD
+  $SEGA_DREAMCAST
+  $SEGA_GAME_GEAR
+  $SEGA_GENESIS
+  $SEGA_MASTER_SYSTEM
+  $SEGA_SG_1000
+  $SONY_PLAYSTATION
+)
+
+get_system_emudeck_bios_directory(){
+  echo "$EMUDECK_ROOT_DIR/Emulation/bios"
+}
+
+declare -rA SYSTEM_TO_EMUDECK_ROMS_SUBDIR_MAP=(
+  [$ARCADE]='arcade'
+  [$ATARI_2600]='atari2600'
+  [$ATARI_5200]='atari5200'
+  [$ATARI_7800]='atari7800'
+  [$ATARI_JAGUAR]='atarijaguar'
+  [$ATARI_LYNX]='atarilynx'
+  [$CBS_COLECOVISION]='colecovision'
+  [$COMMODORE_64]='c64'
+  [$NEC_TURBOGRAFX_CD]='tg-cd'
+  [$NEC_TURBOGRAFX_16]='tg16'
+  [$NINTENDO_3DS]='n3ds'
+  [$NINTENDO_DS]='nds'
+  [$NINTENDO_FAMICOM_DISK_SYSTEM]='famicom'
+  [$NINTENDO_GAME_BOY]='gb'
+  [$NINTENDO_GAME_BOY_ADVANCE]='gba'
+  [$NINTENDO_GAME_BOY_COLOR]='gbc'
+  [$NINTENDO_GAMECUBE]='gc'
+  [$NINTENDO_64]='n64'
+  [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='nes'
+  [$NINTENDO_POKEMON_MINI]='pokemini'
+  [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='snes'
+  [$NINTENDO_SWITCH]='switch'
+  [$NINTENDO_WII]='wii'
+  [$NINTENDO_WIIU]='wiiu/roms'
+  [$PICO_8]='pico8'
+  [$SEGA_DREAMCAST]='dreamcast'
+  [$SEGA_GAME_GEAR]='gamegear'
+  [$SEGA_GENESIS]='genesis'
+  [$SEGA_MASTER_SYSTEM]='mastersystem'
+  [$SEGA_32X]='sega32x'
+  [$SEGA_CD]='segacd'
+  [$SEGA_SATURN]='saturn'
+  [$SEGA_SG_1000]='sg-1000'
+  [$SNK_NEO_GEO]='neogeo'
+  [$SNK_NEO_GEO_CD]='neogeocd'
+  [$SNK_NEO_GEO_POCKET]='ngp'
+  [$SNK_NEO_GEO_POCKET_COLOR]='ngpc'
+  [$SONY_PLAYSTATION]='psx'
+  [$SONY_PLAYSTATION_2]='ps2'
+  [$SONY_PLAYSTATION_PORTABLE]='psp'
+  [$SONY_PLAYSTATION_VITA]='psvita'
+)
+
+get_system_emudeck_roms_directory(){
+  if [[ -v SYSTEM_TO_EMUDECK_ROMS_SUBDIR_MAP[$1] ]]; then
+    echo "$EMUDECK_ROOT_DIR/Emulation/roms/${SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1]}"
+    return 0
+  fi
+  return 1
+}
+
+copy_to_emudeck() {
+  copy_bios_files ENABLED_EMUDECK_SYSTEMS "get_system_emudeck_bios_directory"
+  copy_rom_files ENABLED_EMUDECK_SYSTEMS "get_system_emudeck_roms_directory" false
 }
 
 # Main
 destination_type=$(echo "$1" | tr '[:upper:]' '[:lower:]')
 
 case "$destination_type" in
+  "emudeck")
+    copy_to_emudeck
+    ;;
   "esde")
     copy_to_esde
     ;;
