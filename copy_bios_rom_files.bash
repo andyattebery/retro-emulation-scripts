@@ -9,7 +9,7 @@ ESDE_BIOS_DIR="/Volumes/Untitled/BIOS"
 ESDE_ROMS_DIR="/Volumes/Untitled/ES-DE ROMs"
 MUOS_ROOT_DIR="/Volumes/SD2"
 MINUI_ROOT_DIR="/Volumes/MINUI"
-
+SPRUCE_ROOT_DIR="/Volumes/SPRUCE"
 
 # System Constants
 readonly ARCADE="ARCADE"
@@ -22,6 +22,7 @@ readonly CBS_COLECOVISION="CBS_COLECOVISION"
 readonly COMMODORE_64="COMMODORE_64"
 readonly MICROSOFT_XBOX_360="MICROSOFT_XBOX_360"
 readonly MICROSOFT_XBOX="MICROSOFT_XBOX"
+readonly NEC_SUPERGRAFX="NEC_SUPERGRAFX"
 readonly NEC_TURBOGRAFX_16="NEC_TURBOGRAFX_16"
 readonly NEC_TURBOGRAFX_CD="NEC_TURBOGRAFX_CD"
 readonly NINTENDO_3DS="NINTENDO_3DS"
@@ -156,183 +157,6 @@ copy_rom_files() {
   done
 }
 
-# MinUI (https://github.com/shauninman/MinUI)
-declare -ra ENABLED_MINUI_SYSTEMS=(
-  # Base
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  $SEGA_GENESIS
-  $SONY_PLAYSTATION
-  # Extras
-  # $NEC_TURBOGRAFX_16
-  # $NINTENDO_POKEMON_MINI
-  # $NINTENDO_SUPER_GAME_BOY
-  # $PICO_8
-  $SEGA_GAME_GEAR
-  # $SEGA_MASTER_SYSTEM
-  # $SNK_NEO_GEO_POCKET
-)
-
-declare -rA SYSTEM_TO_MINUI_BIOS_SUBDIR_MAP=(
-  [$NEC_TURBOGRAFX_CD]="PCE"
-  [$NINTENDO_GAME_BOY_ADVANCE]="GBA"
-  [$NINTENDO_GAME_BOY_COLOR]="GBC"
-  [$NINTENDO_GAME_BOY]="GB"
-  [$NINTENDO_POKEMON_MINI]="PKM"
-  [$NINTENDO_SUPER_GAME_BOY]="SGB"
-  [$SEGA_DREAMCAST]="."
-  [$SONY_PLAYSTATION]="PS"
-)
-
-get_system_minui_bios_directory(){
-  if [[ -v SYSTEM_TO_MINUI_BIOS_SUBDIR_MAP[$1] ]]; then
-    echo "$MINUI_ROOT_DIR/Bios/${SYSTEM_TO_MINUI_BIOS_SUBDIR_MAP[$1]}"
-    return 0
-  fi
-  return 1
-}
-
-declare -rA SYSTEM_TO_MINUI_ROMS_SUBDIR_MAP=(
-  [$NEC_TURBOGRAFX_16]='TurboGrafx-16 (PCE)'
-  [$NINTENDO_FAMICOM_DISK_SYSTEM]='Nintendo Entertainment System (FC)'
-  [$NINTENDO_GAME_BOY]='Game Boy (GB)'
-  [$NINTENDO_GAME_BOY_ADVANCE]='Game Boy Advance (GBA)'
-  [$NINTENDO_GAME_BOY_COLOR]='Game Boy Color (GBC)'
-  [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='Nintendo Entertainment System (FC)'
-  [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='Super Nintendo Entertainment System (SFC)'
-  [$SEGA_GAME_GEAR]='Sega Game Gear (GG)'
-  [$SEGA_GENESIS]='Sega Genesis (MD)'
-  [$SEGA_MASTER_SYSTEM]='Sega Master System (SMS)'
-  [$SEGA_32X]='Sega 32X (THIRTYTWOX)'
-  [$SEGA_CD]='Sega CD (MD)'
-  [$SONY_PLAYSTATION]='Sony PlayStation (PS)'
-)
-
-get_system_minui_roms_directory(){
-  if [[ -v SYSTEM_TO_MINUI_ROMS_SUBDIR_MAP[$1] ]]; then
-    echo "$MINUI_ROOT_DIR/Roms/${SYSTEM_TO_MINUI_ROMS_SUBDIR_MAP[$1]}"
-    return 0
-  fi
-  return 1
-}
-
-copy_to_minui() {
-  copy_bios_files ENABLED_MINUI_SYSTEMS "get_system_minui_bios_directory"
-  copy_rom_files ENABLED_MINUI_SYSTEMS "get_system_minui_roms_directory" false
-}
-
-# MuOS (https://muos.dev)
-declare -ra ENABLED_MUOS_SYSTEMS=(
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  $SONY_PLAYSTATION
-)
-
-get_system_muos_bios_directory(){
-  echo "$MUOS_ROOT_DIR/MUOS/Bios"
-}
-
-get_system_muos_roms_directory(){
-  echo "$MUOS_ROOT_DIR/ROMS"
-}
-
-copy_to_muos() {
-  copy_bios_files ENABLED_MUOS_SYSTEMS "get_system_muos_bios_directory"
-  copy_rom_files ENABLED_MUOS_SYSTEMS "get_system_muos_roms_directory" true
-}
-
-# ES-DE (EmulationStation Desktop Edition) (https://www.es-de.org)
-declare -a ENABLED_ESDE_SYSTEMS=(
-  $NINTENDO_64
-  $NINTENDO_FAMICOM_DISK_SYSTEM
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAMECUBE
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  # $NINTENDO_SWITCH
-  $NINTENDO_WII
-  $NINTENDO_WIIU
-  $SEGA_32X
-  $SEGA_CD
-  $SEGA_DREAMCAST
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  $SEGA_MASTER_SYSTEM
-  $SEGA_SG_1000
-  $SONY_PLAYSTATION
-)
-
-get_system_esde_bios_directory(){
-  echo "$ESDE_BIOS_DIR"
-}
-
-declare -rA SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP=(
-  [$ARCADE]='arcade'
-  [$ATARI_2600]='atari2600'
-  [$ATARI_5200]='atari5200'
-  [$ATARI_7800]='atari7800'
-  [$ATARI_JAGUAR]='atarijaguar'
-  [$ATARI_LYNX]='atarilynx'
-  [$CBS_COLECOVISION]='colecovision'
-  [$COMMODORE_64]='c64'
-  [$NEC_TURBOGRAFX_CD]='tg-cd'
-  [$NEC_TURBOGRAFX_16]='tg16'
-  [$NINTENDO_3DS]='n3ds'
-  [$NINTENDO_DS]='nds'
-  [$NINTENDO_FAMICOM_DISK_SYSTEM]='famicom'
-  [$NINTENDO_GAME_BOY]='gb'
-  [$NINTENDO_GAME_BOY_ADVANCE]='gba'
-  [$NINTENDO_GAME_BOY_COLOR]='gbc'
-  [$NINTENDO_GAMECUBE]='gc'
-  [$NINTENDO_64]='n64'
-  [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='nes'
-  [$NINTENDO_POKEMON_MINI]='pokemini'
-  [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='snes'
-  [$NINTENDO_SWITCH]='switch'
-  [$NINTENDO_WII]='wii'
-  [$NINTENDO_WIIU]='wiiu'
-  [$PICO_8]='pico8'
-  [$SEGA_DREAMCAST]='dreamcast'
-  [$SEGA_GAME_GEAR]='gamegear'
-  [$SEGA_GENESIS]='genesis'
-  [$SEGA_MASTER_SYSTEM]='mastersystem'
-  [$SEGA_32X]='sega32x'
-  [$SEGA_CD]='segacd'
-  [$SEGA_SATURN]='saturn'
-  [$SEGA_SG_1000]='sg-1000'
-  [$SNK_NEO_GEO]='neogeo'
-  [$SNK_NEO_GEO_CD]='neogeocd'
-  [$SNK_NEO_GEO_POCKET]='ngp'
-  [$SNK_NEO_GEO_POCKET_COLOR]='ngpc'
-  [$SONY_PLAYSTATION]='psx'
-  [$SONY_PLAYSTATION_2]='ps2'
-  [$SONY_PLAYSTATION_PORTABLE]='psp'
-  [$SONY_PLAYSTATION_VITA]='psvita'
-)
-
-get_system_esde_roms_directory(){
-  if [[ -v SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1] ]]; then
-    echo "$ESDE_ROMS_DIR/${SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1]}"
-    return 0
-  fi
-  return 1
-}
-
-copy_to_esde() {
-  copy_bios_files ENABLED_ESDE_SYSTEMS "get_system_esde_bios_directory"
-  copy_rom_files ENABLED_ESDE_SYSTEMS "get_system_esde_roms_directory" false
-}
-
 # EmuDeck (https://emudeck.github.io)
 declare -a ENABLED_EMUDECK_SYSTEMS=(
   $NINTENDO_64
@@ -360,6 +184,7 @@ get_system_emudeck_bios_directory(){
   echo "$EMUDECK_ROOT_DIR/Emulation/bios"
 }
 
+# https://emudeck.github.io/cheat-sheet/
 declare -rA SYSTEM_TO_EMUDECK_ROMS_SUBDIR_MAP=(
   [$ARCADE]='arcade'
   [$ATARI_2600]='atari2600'
@@ -417,6 +242,258 @@ copy_to_emudeck() {
   copy_rom_files ENABLED_EMUDECK_SYSTEMS "get_system_emudeck_roms_directory" false
 }
 
+# ES-DE (EmulationStation Desktop Edition) (https://www.es-de.org)
+declare -a ENABLED_ESDE_SYSTEMS=(
+  $NINTENDO_64
+  $NINTENDO_FAMICOM_DISK_SYSTEM
+  $NINTENDO_GAME_BOY_ADVANCE
+  $NINTENDO_GAME_BOY_COLOR
+  $NINTENDO_GAME_BOY
+  $NINTENDO_GAMECUBE
+  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
+  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
+  # $NINTENDO_SWITCH
+  $NINTENDO_WII
+  $NINTENDO_WIIU
+  $SEGA_32X
+  $SEGA_CD
+  $SEGA_DREAMCAST
+  $SEGA_GAME_GEAR
+  $SEGA_GENESIS
+  $SEGA_MASTER_SYSTEM
+  $SEGA_SG_1000
+  $SONY_PLAYSTATION
+)
+
+get_system_esde_bios_directory(){
+  echo "$ESDE_BIOS_DIR"
+}
+
+# systems.txt in ROMs directory
+declare -rA SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP=(
+  [$ARCADE]='arcade'
+  [$ATARI_2600]='atari2600'
+  [$ATARI_5200]='atari5200'
+  [$ATARI_7800]='atari7800'
+  [$ATARI_JAGUAR]='atarijaguar'
+  [$ATARI_LYNX]='atarilynx'
+  [$CBS_COLECOVISION]='colecovision'
+  [$COMMODORE_64]='c64'
+  [$NEC_TURBOGRAFX_CD]='tg-cd'
+  [$NEC_TURBOGRAFX_16]='tg16'
+  [$NINTENDO_3DS]='n3ds'
+  [$NINTENDO_DS]='nds'
+  [$NINTENDO_FAMICOM_DISK_SYSTEM]='famicom'
+  [$NINTENDO_GAME_BOY]='gb'
+  [$NINTENDO_GAME_BOY_ADVANCE]='gba'
+  [$NINTENDO_GAME_BOY_COLOR]='gbc'
+  [$NINTENDO_GAMECUBE]='gc'
+  [$NINTENDO_64]='n64'
+  [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='nes'
+  [$NINTENDO_POKEMON_MINI]='pokemini'
+  [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='snes'
+  [$NINTENDO_SWITCH]='switch'
+  [$NINTENDO_WII]='wii'
+  [$NINTENDO_WIIU]='wiiu'
+  [$PICO_8]='pico8'
+  [$SEGA_DREAMCAST]='dreamcast'
+  [$SEGA_GAME_GEAR]='gamegear'
+  [$SEGA_GENESIS]='genesis'
+  [$SEGA_MASTER_SYSTEM]='mastersystem'
+  [$SEGA_32X]='sega32x'
+  [$SEGA_CD]='segacd'
+  [$SEGA_SATURN]='saturn'
+  [$SEGA_SG_1000]='sg-1000'
+  [$SNK_NEO_GEO]='neogeo'
+  [$SNK_NEO_GEO_CD]='neogeocd'
+  [$SNK_NEO_GEO_POCKET]='ngp'
+  [$SNK_NEO_GEO_POCKET_COLOR]='ngpc'
+  [$SONY_PLAYSTATION]='psx'
+  [$SONY_PLAYSTATION_2]='ps2'
+  [$SONY_PLAYSTATION_PORTABLE]='psp'
+  [$SONY_PLAYSTATION_VITA]='psvita'
+)
+
+get_system_esde_roms_directory(){
+  if [[ -v SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1] ]]; then
+    echo "$ESDE_ROMS_DIR/${SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1]}"
+    return 0
+  fi
+  return 1
+}
+
+copy_to_esde() {
+  copy_bios_files ENABLED_ESDE_SYSTEMS "get_system_esde_bios_directory"
+  copy_rom_files ENABLED_ESDE_SYSTEMS "get_system_esde_roms_directory" false
+}
+
+# MinUI (https://github.com/shauninman/MinUI)
+declare -ra ENABLED_MINUI_SYSTEMS=(
+  # Base
+  $NINTENDO_GAME_BOY
+  $NINTENDO_GAME_BOY_ADVANCE
+  $NINTENDO_GAME_BOY_COLOR
+  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
+  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
+  $SEGA_GENESIS
+  $SONY_PLAYSTATION
+  # Extras
+  # $NEC_TURBOGRAFX_16
+  # $NINTENDO_POKEMON_MINI
+  # $NINTENDO_SUPER_GAME_BOY
+  # $PICO_8
+  $SEGA_GAME_GEAR
+  # $SEGA_MASTER_SYSTEM
+  # $SNK_NEO_GEO_POCKET
+)
+
+declare -rA SYSTEM_TO_MINUI_BIOS_SUBDIR_MAP=(
+  [$NEC_TURBOGRAFX_CD]="PCE"
+  [$NINTENDO_GAME_BOY_ADVANCE]="GBA"
+  [$NINTENDO_GAME_BOY_COLOR]="GBC"
+  [$NINTENDO_GAME_BOY]="GB"
+  [$NINTENDO_POKEMON_MINI]="PKM"
+  [$NINTENDO_SUPER_GAME_BOY]="SGB"
+  [$SEGA_DREAMCAST]="."
+  [$SONY_PLAYSTATION]="PS"
+)
+
+get_system_minui_bios_directory(){
+  if [[ -v SYSTEM_TO_MINUI_BIOS_SUBDIR_MAP[$1] ]]; then
+    echo "$MINUI_ROOT_DIR/Bios/${SYSTEM_TO_MINUI_BIOS_SUBDIR_MAP[$1]}"
+    return 0
+  fi
+  return 1
+}
+
+# https://github.com/shauninman/MinUI/tree/main/skeleton/BASE/Roms
+# https://github.com/shauninman/MinUI/tree/main/skeleton/EXTRAS/Roms
+declare -rA SYSTEM_TO_MINUI_ROMS_SUBDIR_MAP=(
+  [$NEC_TURBOGRAFX_16]='TurboGrafx-16 (PCE)'
+  [$NINTENDO_GAME_BOY]='Game Boy (GB)'
+  [$NINTENDO_GAME_BOY_ADVANCE]='Game Boy Advance (GBA)'
+  [$NINTENDO_GAME_BOY_COLOR]='Game Boy Color (GBC)'
+  [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='Nintendo Entertainment System (FC)'
+  [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='Super Nintendo Entertainment System (SFC)'
+  [$SEGA_GAME_GEAR]='Sega Game Gear (GG)'
+  [$SEGA_GENESIS]='Sega Genesis (MD)'
+  [$SEGA_MASTER_SYSTEM]='Sega Master System (SMS)'
+  [$SEGA_32X]='Sega 32X (THIRTYTWOX)'
+  [$SEGA_CD]='Sega CD (MD)'
+  [$SONY_PLAYSTATION]='Sony PlayStation (PS)'
+)
+
+get_system_minui_roms_directory(){
+  if [[ -v SYSTEM_TO_MINUI_ROMS_SUBDIR_MAP[$1] ]]; then
+    echo "$MINUI_ROOT_DIR/Roms/${SYSTEM_TO_MINUI_ROMS_SUBDIR_MAP[$1]}"
+    return 0
+  fi
+  return 1
+}
+
+copy_to_minui() {
+  copy_bios_files ENABLED_MINUI_SYSTEMS "get_system_minui_bios_directory"
+  copy_rom_files ENABLED_MINUI_SYSTEMS "get_system_minui_roms_directory" false
+}
+
+# MuOS (https://muos.dev)
+declare -ra ENABLED_MUOS_SYSTEMS=(
+  $NINTENDO_GAME_BOY
+  $NINTENDO_GAME_BOY_ADVANCE
+  $NINTENDO_GAME_BOY_COLOR
+  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
+  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
+  $SEGA_GAME_GEAR
+  $SEGA_GENESIS
+  $SONY_PLAYSTATION
+)
+
+get_system_muos_bios_directory(){
+  echo "$MUOS_ROOT_DIR/MUOS/Bios"
+}
+
+get_system_muos_roms_directory(){
+  echo "$MUOS_ROOT_DIR/ROMS"
+}
+
+copy_to_muos() {
+  copy_bios_files ENABLED_MUOS_SYSTEMS "get_system_muos_bios_directory"
+  copy_rom_files ENABLED_MUOS_SYSTEMS "get_system_muos_roms_directory" true
+}
+
+# Spruce (https://spruceui.github.io/)
+declare -ra ENABLED_SPRUCE_SYSTEMS=(
+  # $NEC_TURBOGRAFX_16
+  $NINTENDO_GAME_BOY
+  $NINTENDO_GAME_BOY_ADVANCE
+  $NINTENDO_GAME_BOY_COLOR
+  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
+  # $NINTENDO_POKEMON_MINI
+  # $NINTENDO_SUPER_GAME_BOY
+  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
+  # $PICO_8
+  $SEGA_GAME_GEAR
+  $SEGA_GENESIS
+  # $SEGA_MASTER_SYSTEM
+  # $SNK_NEO_GEO_POCKET
+  $SONY_PLAYSTATION
+)
+
+get_system_spruce_bios_directory(){
+  echo "$SPRUCE_ROOT_DIR/BIOS"
+}
+
+# https://github.com/spruceUI/spruceOS/wiki/11.-Adding-Games#rom-folder-chart
+declare -rA SYSTEM_TO_SPRUCE_ROMS_SUBDIR_MAP=(
+  [$ATARI_2600]='ATARI'
+  [$ATARI_5200]='FIFTYTWOHUNDRED'
+  [$ATARI_7800]='SEVENTYEIGHTHUNDRED'
+  [$ATARI_LYNX]='LYNX'
+  [$CBS_COLECOVISION]='COLECO'
+  [$COMMODORE_64]='COMMODORE'
+  [$MAME]='MAME2003PLUS'
+  [$NEC_SUPERGRAFX]='SGFX'
+  [$NEC_TURBOGRAFX_16]='PCE'
+  [$NEC_TURBOGRAFX_CD]='PCECD'
+  [$NINTENDO_64]='N64'
+  [$NINTENDO_FAMICOM_DISK_SYSTEM]='FDS'
+  [$NINTENDO_DS]='NDS'
+  [$NINTENDO_GAME_BOY]='GB'
+  [$NINTENDO_GAME_BOY_ADVANCE]='GBA'
+  [$NINTENDO_GAME_BOY_COLOR]='GBC'
+  [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='FC'
+  [$NINTENDO_POKEMON_MINI]='POKE'
+  [$NINTENDO_SUPER_GAME_BOY]='SGB'
+  [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='SFC'
+  [$PICO_8]='PICO8'
+  [$SEGA_32X]='THIRTYTWOX'
+  [$SEGA_CD]='SEGACD'
+  [$SEGA_DREAMCAST]='DC'
+  [$SEGA_GAME_GEAR]='GG'
+  [$SEGA_GENESIS]='MD'
+  [$SEGA_MASTER_SYSTEM]='MS'
+  [$SEGA_SG_1000]='SEGASGONE'
+  [$SNK_NEO_GEO]='NEOGEO'
+  [$SNK_NEO_GEO_CD]='NEOCD'
+  [$SNK_NEO_GEO_POCKET]='NGP'
+  [$SNK_NEO_GEO_POCKET_COLOR]='NGPC'
+  [$SONY_PLAYSTATION]='PS'
+  [$SONY_PLAYSTATION_PORTABLE]='PSP'
+)
+
+get_system_spruce_roms_directory(){
+  if [[ -v SYSTEM_TO_SPRUCE_ROMS_SUBDIR_MAP[$1] ]]; then
+    echo "$MINUI_ROOT_DIR/Roms/${SYSTEM_TO_MINUI_ROMS_SUBDIR_MAP[$1]}"
+    return 0
+  fi
+  return 1
+}
+
+copy_to_spruce() {
+  copy_bios_files ENABLED_SPRUCE_SYSTEMS "get_system_spruce_bios_directory"
+  copy_rom_files ENABLED_SPRUCE_SYSTEMS "get_system_spruce_roms_directory" false
+}
+
 # Main
 destination_type=$(echo "$1" | tr '[:upper:]' '[:lower:]')
 
@@ -432,6 +509,9 @@ case "$destination_type" in
     ;;
   "muos")
     copy_to_muos
+    ;;
+  "spruce")
+    copy_to_spruce
     ;;
   *)
     echo "$1 is not a supported destination OS/application."
