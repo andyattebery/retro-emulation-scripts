@@ -183,25 +183,25 @@ declare -ra TRIMUI_BRICK_SYSTEMS=(
 
 device_name_to_systems_array() {
   case "$1" in
-  "anbernic_rgxx" | "rgxx" | "rg35xxsp")
+  "anbernic-rgxx" | "anbernic_rgxx" | "rgxx" | "rg35xxsp")
     echo "ANBERNIC_RGXX_SYSTEMS"
     ;;
-  "anbernic_rgxx_analog_sticks" | "rgxx_analog_sticks" | "rg35xxh" | "rgcubexx")
+  "anbernic-rgxx-analog-sticks" | "anbernic_rgxx_analog_sticks" | "rgxx-analog-sticks" | "rgxx_analog_sticks" | "rg35xxh" | "rgcubexx")
     echo "ANBERNIC_RGXX_ANALOGUE_STICKS_SYSTEMS"
     ;;
-  "miyoo_a30" | "a30")
+  "miyoo-a30" | "miyoo_a30" | "a30")
     echo "MIYOO_A30_SYSTEMS"
     ;;
-  "razer_edge")
+  "razer-edge" | "razer_edge")
     echo "RAZER_EDGE_SYSTEMS"
     ;;
-  "retroid_pocket_5")
+  "retroid-pocket-5" | "retroid_pocket_5")
     echo "RETROID_POCKET_5_SYSTEMS"
     ;;
-  "steam_deck")
+  "steam-deck" | "steam_deck")
     echo "STEAM_DECK_SYSTEMS"
     ;;
-  "trimui_brick" | "trimuibrick")
+  "trimui-brick" | "trimui_brick" | "trimuibrick")
     echo "TRIMUI_BRICK_SYSTEMS"
     ;;
   *)
