@@ -206,6 +206,7 @@ device_name_to_systems_array() {
     ;;
   *)
     echo "$1 is not a supported system."
+    return 1
     ;;
 esac
 }
@@ -659,7 +660,7 @@ copy_to_spruce() {
 destination_type=$(echo "$1" | tr '[:upper:]' '[:lower:]')
 
 systems_array_name=""
-if [ -z $2 ]; then
+if [ -n "$2" ]; then
   device=$(echo "$2" | tr '[:upper:]' '[:lower:]')
   systems_array_name=$(device_name_to_systems_array $device)
 fi
