@@ -604,13 +604,13 @@ copy_to_muos() {
 
 # ROCKNIX (https://rocknix.org)
 get_system_rocknix_bios_directory(){
-  echo "$ROCKNIX_REMOTE_HOSTNAME:/system/roms/bios"
+  echo "$ROCKNIX_REMOTE_HOSTNAME:/storage/roms/bios"
 }
 
 # https://rocknix.org/play/add-games/
-get_system_knulli_roms_directory(){
+get_system_rocknix_roms_directory(){
   if [[ -v SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1] ]]; then
-    echo "$ROCKNIX_REMOTE_HOSTNAME:/system/roms/${SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1]}"
+    echo "$ROCKNIX_REMOTE_HOSTNAME:/storage/roms/${SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1]}"
     return 0
   fi
   return 1
