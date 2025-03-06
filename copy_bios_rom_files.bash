@@ -3,14 +3,18 @@
 shopt -s nocasematch
 
 # Directory Paths
-SOURCE_BIOS_DIR="nas-01:/mnt/storage/Games/System Files"
-SOURCE_ROMS_DIR="nas-01:/mnt/storage/Games/ROMs/Curated"
+#SOURCE_BIOS_DIR="nas-01:/mnt/storage/Games/System Files"
+#SOURCE_ROMS_DIR="nas-01:/mnt/storage/Games/ROMs/Curated"
+SOURCE_BIOS_DIR="/mnt/storage/Games/System Files"
+SOURCE_ROMS_DIR="/mnt/storage/Games/ROMs/Curated"
 
 EMUDECK_ROOT_DIR="/run/media/SDCARDNAME/"
 # ESDE_BIOS_DIR="/Volumes/Android_Emu/BIOS"
 # ESDE_ROMS_DIR="/Volumes/Android_Emu/ROMs"
-ESDE_BIOS_DIR="trimui-brick:/userdata/bios"
-ESDE_ROMS_DIR="trimui-brick:/userdata/roms"
+KNULLI_BIOS_DIR="root@trimui-brick:/userdata/bios"
+KNULLI_ROMS_DIR="root@trimui-brick:/userdata/roms"
+ROCKNIX_BIOS_DIR="root@retroid-pocket-5:/storage/roms/bios"
+ROCKNIX_ROMS_DIR="root@retroid-pocket-5:/storage/roms"
 MUOS_ROOT_DIR="/Volumes/MUOS_SD2"
 MINUI_ROOT_DIR="/Volumes/MINUI"
 SPRUCE_ROOT_DIR="/Volumes/SPRUCE"
