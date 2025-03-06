@@ -9,14 +9,12 @@ SOURCE_BIOS_DIR="/mnt/storage/Games/System Files"
 SOURCE_ROMS_DIR="/mnt/storage/Games/ROMs/Curated"
 
 EMUDECK_ROOT_DIR="/run/media/SDCARDNAME/"
-# ESDE_BIOS_DIR="/Volumes/Android_Emu/BIOS"
-# ESDE_ROMS_DIR="/Volumes/Android_Emu/ROMs"
-KNULLI_BIOS_DIR="root@trimui-brick:/userdata/bios"
-KNULLI_ROMS_DIR="root@trimui-brick:/userdata/roms"
-ROCKNIX_BIOS_DIR="root@retroid-pocket-5:/storage/roms/bios"
-ROCKNIX_ROMS_DIR="root@retroid-pocket-5:/storage/roms"
+ESDE_BIOS_DIR="/Volumes/Android_Emu/BIOS"
+ESDE_ROMS_DIR="/Volumes/Android_Emu/ROMs"
+KNULLI_REMOTE_HOSTNAME="root@trimui-brick"
 MUOS_ROOT_DIR="/Volumes/MUOS_SD2"
 MINUI_ROOT_DIR="/Volumes/MINUI"
+ROCKNIX_REMOTE_HOSTNAME="root@retroid-pocket-5"
 SPRUCE_ROOT_DIR="/Volumes/SPRUCE"
 
 # System Constants
@@ -70,7 +68,7 @@ readonly SONY_PLAYSTATION_PORTABLE="SONY_PLAYSTATION_PORTABLE"
 readonly SONY_PLAYSTATION_VITA="SONY_PLAYSTATION_VITA"
 readonly SONY_PLAYSTATION="SONY_PLAYSTATION"
 
-# Systems
+# Device Systems
 declare -ra ANBERNIC_RGXX_SYSTEMS=(
   $NINTENDO_GAME_BOY
   $NINTENDO_GAME_BOY_ADVANCE
@@ -485,6 +483,25 @@ copy_to_esde() {
   copy_rom_files $enabled_systems_array_name "get_system_esde_roms_directory" false
 }
 
+# Knulli
+get_system_knulli_bios_directory(){
+  echo "$KNULLI_REMOTE_HOSTNAME:/userdata/bios"
+}
+
+get_system_knulli_roms_directory(){
+  if [[ -v SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1] ]]; then
+    echo "$KNULLI_REMOTE_HOSTNAME:/userdata/roms/${SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1]}"
+    return 0
+  fi
+  return 1
+}
+
+copy_to_knulli() {
+  local enabled_systems_array_name=${1:-DEFAULT_ESDE_SYSTEMS}
+  copy_bios_files $enabled_systems_array_name "get_system_knulli_bios_directory"
+  copy_rom_files $enabled_systems_array_name "get_system_knull_roms_directory" false
+}
+
 # MinUI (https://github.com/shauninman/MinUI)
 declare -ra DEFAULT_MINUI_SYSTEMS=(
   # Base
@@ -585,6 +602,26 @@ copy_to_muos() {
   copy_rom_files $enabled_systems_array_name "get_system_muos_roms_directory" true
 }
 
+# ROCKNIX (https://rocknix.org)
+get_system_rocknix_bios_directory(){
+  echo "$ROCKNIX_REMOTE_HOSTNAME:/system/roms/bios"
+}
+
+# https://rocknix.org/play/add-games/
+get_system_knulli_roms_directory(){
+  if [[ -v SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1] ]]; then
+    echo "$ROCKNIX_REMOTE_HOSTNAME:/system/roms/${SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1]}"
+    return 0
+  fi
+  return 1
+}
+
+copy_to_rocknix() {
+  local enabled_systems_array_name=${1:-DEFAULT_ESDE_SYSTEMS}
+  copy_bios_files $enabled_systems_array_name "get_system_rocknix_bios_directory"
+  copy_rom_files $enabled_systems_array_name "get_system_rocknix_roms_directory" false
+}
+
 # Spruce (https://spruceui.github.io/)
 declare -ra DEFAULT_SPRUCE_SYSTEMS=(
   # $NEC_TURBOGRAFX_16
@@ -676,11 +713,17 @@ case "$destination_type" in
   "esde")
     copy_to_esde "$systems_array_name"
     ;;
+  "knulli")
+    copy_to_knulli "$systems_array_name"
+    ;;
   "minui")
     copy_to_minui "$systems_array_name"
     ;;
   "muos")
     copy_to_muos "$systems_array_name"
+    ;;
+  "rocknix")
+    copy_to_rocknix "$systems_array_name"
     ;;
   "spruce")
     copy_to_spruce "$systems_array_name"
