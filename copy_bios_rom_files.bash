@@ -3,10 +3,10 @@
 shopt -s nocasematch
 
 # Directory Paths
-#SOURCE_BIOS_DIR="nas-01:/mnt/storage/Games/System Files"
-#SOURCE_ROMS_DIR="nas-01:/mnt/storage/Games/ROMs/Curated"
-SOURCE_BIOS_DIR="/mnt/storage/Games/System Files"
-SOURCE_ROMS_DIR="/mnt/storage/Games/ROMs/Curated"
+SOURCE_BIOS_DIR="nas-01:/mnt/storage/Games/System Files"
+SOURCE_ROMS_DIR="nas-01:/mnt/storage/Games/ROMs/Curated"
+# SOURCE_BIOS_DIR="/mnt/storage/Games/System Files"
+# SOURCE_ROMS_DIR="/mnt/storage/Games/ROMs/Curated"
 
 EMUDECK_ROOT_DIR="/run/media/SDCARDNAME/"
 ESDE_BIOS_DIR="/Volumes/Android_Emu/BIOS"
@@ -46,6 +46,7 @@ readonly NINTENDO_POKEMON_MINI="NINTENDO_POKEMON_MINI"
 readonly NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM="NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM"
 readonly NINTENDO_SUPER_GAME_BOY="NINTENDO_SUPER_GAME_BOY"
 readonly NINTENDO_SWITCH="NINTENDO_SWITCH"
+readonly NINTENDO_VIRTUAL_BOY="NINTENDO_VIRTUAL_BOY"
 readonly NINTENDO_WIIU="NINTENDO_WIIU"
 readonly NINTENDO_WII="NINTENDO_WII"
 readonly PICO_8="PICO_8"
@@ -70,6 +71,7 @@ readonly SONY_PLAYSTATION="SONY_PLAYSTATION"
 
 # Device Systems
 declare -ra ANBERNIC_RGXX_SYSTEMS=(
+  $PICO_8
   $NINTENDO_GAME_BOY
   $NINTENDO_GAME_BOY_ADVANCE
   $NINTENDO_GAME_BOY_COLOR
@@ -79,10 +81,10 @@ declare -ra ANBERNIC_RGXX_SYSTEMS=(
   $SEGA_CD
   $SEGA_GAME_GEAR
   $SEGA_GENESIS
-  # $SONY_PLAYSTATION
 )
 
 declare -ra ANBERNIC_RGXX_ANALOGUE_STICKS_SYSTEMS=(
+  $PICO_8
   $NINTENDO_GAME_BOY
   $NINTENDO_GAME_BOY_ADVANCE
   $NINTENDO_GAME_BOY_COLOR
@@ -215,6 +217,7 @@ esac
 
 # Source File Mappings
 declare -rA SYSTEM_TO_BIOS_FILES_GLOB_MAP=(
+  [$PICO_8]="pico-8"
   [$NEC_TURBOGRAFX_CD]="syscard*.pce"
   [$NINTENDO_FAMICOM_DISK_SYSTEM]="disksys.rom"
   [$NINTENDO_GAME_BOY_ADVANCE]="gba_bios.bin"
@@ -238,6 +241,7 @@ declare -rA SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP=(
   [$ATARI_LYNX]='Atari - Lynx'
   [$CBS_COLECOVISION]='CBS - Colecovision'
   [$COMMODORE_64]='Commodore - 64'
+  [$PICO_8]='Lexaloffle - PICO-8'
   [$NEC_TURBOGRAFX_16]='NEC - PC Engine - TurboGrafx 16'
   [$NEC_TURBOGRAFX_CD]='NEC - PC Engine CD - TurboGrafx-CD'
   [$NINTENDO_64]='Nintendo - Nintendo 64'
@@ -513,13 +517,14 @@ declare -ra DEFAULT_MINUI_SYSTEMS=(
   $SEGA_GENESIS
   $SONY_PLAYSTATION
   # Extras
-  # $NEC_TURBOGRAFX_16
-  # $NINTENDO_POKEMON_MINI
-  # $NINTENDO_SUPER_GAME_BOY
-  # $PICO_8
+  $NEC_TURBOGRAFX_16
+  $NINTENDO_POKEMON_MINI
+  $NINTENDO_SUPER_GAME_BOY
+  $NINTENDO_VIRTUAL_BOY
+  $PICO_8
   $SEGA_GAME_GEAR
-  # $SEGA_MASTER_SYSTEM
-  # $SNK_NEO_GEO_POCKET
+  $SEGA_MASTER_SYSTEM
+  $SNK_NEO_GEO_POCKET
 )
 
 declare -rA SYSTEM_TO_MINUI_BIOS_SUBDIR_MAP=(
@@ -544,17 +549,20 @@ get_system_minui_bios_directory(){
 # https://github.com/shauninman/MinUI/tree/main/skeleton/BASE/Roms
 # https://github.com/shauninman/MinUI/tree/main/skeleton/EXTRAS/Roms
 declare -rA SYSTEM_TO_MINUI_ROMS_SUBDIR_MAP=(
+  [$PICO_8]='Pico-8 (P8)'
   [$NEC_TURBOGRAFX_16]='TurboGrafx-16 (PCE)'
   [$NINTENDO_GAME_BOY]='Game Boy (GB)'
   [$NINTENDO_GAME_BOY_ADVANCE]='Game Boy Advance (GBA)'
   [$NINTENDO_GAME_BOY_COLOR]='Game Boy Color (GBC)'
   [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='Nintendo Entertainment System (FC)'
+  [$NINTENDO_POKEMON_MINI]='Pokémon mini (PKM)'
   [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='Super Nintendo Entertainment System (SFC)'
+  [$NINTENDO_VIRTUAL_BOY]='Virtual Boy (VB)'
   [$SEGA_GAME_GEAR]='Sega Game Gear (GG)'
   [$SEGA_GENESIS]='Sega Genesis (MD)'
   [$SEGA_MASTER_SYSTEM]='Sega Master System (SMS)'
-  [$SEGA_32X]='Sega 32X (THIRTYTWOX)'
   [$SEGA_CD]='Sega CD (MD)'
+  [$SNK_NEO_GEO_POCKET_COLOR]='Neo Geo Pocket Color (NGPC)'
   [$SONY_PLAYSTATION]='Sony PlayStation (PS)'
 )
 
@@ -575,6 +583,7 @@ copy_to_minui() {
 
 # MuOS (https://muos.dev)
 declare -ra DEFAULT_MUOS_SYSTEMS=(
+  $PICO_8
   $NINTENDO_GAME_BOY
   $NINTENDO_GAME_BOY_ADVANCE
   $NINTENDO_GAME_BOY_COLOR
@@ -730,5 +739,6 @@ case "$destination_type" in
     ;;
   *)
     echo "$1 is not a supported destination OS/application."
+    exit 1
     ;;
 esac
