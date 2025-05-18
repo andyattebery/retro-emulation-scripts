@@ -3,14 +3,18 @@
 shopt -s nocasematch
 
 # Directory Paths
-SOURCE_BIOS_DIR="nas-01:/mnt/storage/Games/System Files"
-SOURCE_ROMS_DIR="nas-01:/mnt/storage/Games/ROMs/Curated"
-# SOURCE_BIOS_DIR="/mnt/storage/Games/System Files"
-# SOURCE_ROMS_DIR="/mnt/storage/Games/ROMs/Curated"
+#SOURCE_BIOS_DIR="nas-01:/mnt/storage/Games/System Files"
+#SOURCE_ROMS_DIR="nas-01:/mnt/storage/Games/ROMs/Curated"
+SOURCE_BIOS_DIR="/mnt/storage/Games/System Files"
+SOURCE_ROMS_DIR="/mnt/storage/Games/ROMs/Curated"
 
 EMUDECK_ROOT_DIR="/run/media/SDCARDNAME/"
-ESDE_BIOS_DIR="/Volumes/Android_Emu/BIOS"
-ESDE_ROMS_DIR="/Volumes/Android_Emu/ROMs"
+#ESDE_BIOS_DIR="/Volumes/Android_Emu/BIOS"
+#ESDE_ROMS_DIR="/Volumes/Android_Emu/ROMs"
+ESDE_BIOS_DIR="root@192.168.1.128:/userdata/bios"
+ESDE_ROMS_DIR="root@192.168.1.128:/userdata/roms"
+#ESDE_BIOS_DIR="bazzite@192.168.1.49:/run/media/bazzite/Samsung SSD 860 EVO mSATA 1TB/Emulation/bios"
+#ESDE_ROMS_DIR="bazzite@192.168.1.49:/run/media/bazzite/Samsung SSD 860 EVO mSATA 1TB/Emulation/roms"
 KNULLI_REMOTE_HOSTNAME="root@trimui-brick"
 MUOS_ROOT_DIR="/Volumes/MUOS_SD2"
 MINUI_ROOT_DIR="/Volumes/MINUI"
@@ -280,8 +284,8 @@ copy_bios_files() {
     if [[ -v SYSTEM_TO_BIOS_FILES_GLOB_MAP[$system] ]]; then
       local source_system_bios_files_glob=(${SYSTEM_TO_BIOS_FILES_GLOB_MAP[$system]})
       local destination_system_bios_directory=$(eval "$get_destination_system_bios_directory_function_name" $system)
-      echo "rsync -avP \"$SOURCE_BIOS_DIR/$source_system_bios_files_glob\" \"$destination_system_bios_directory/\""
-      rsync -avP "$SOURCE_BIOS_DIR/$source_system_bios_files_glob" "$destination_system_bios_directory/"
+      echo "rsync -avP \"$SOURCE_BIOS_DIR/\"$source_system_bios_files_glob \"$destination_system_bios_directory/\""
+      rsync -avP "$SOURCE_BIOS_DIR/"$source_system_bios_files_glob "$destination_system_bios_directory/"
     fi
 
   done
@@ -359,7 +363,7 @@ declare -rA SYSTEM_TO_EMUDECK_ROMS_SUBDIR_MAP=(
   [$NINTENDO_GAME_BOY]='gb'
   [$NINTENDO_GAME_BOY_ADVANCE]='gba'
   [$NINTENDO_GAME_BOY_COLOR]='gbc'
-  [$NINTENDO_GAMECUBE]='gc'
+  [$NINTENDO_GAMECUBE]='gamecube'
   [$NINTENDO_64]='n64'
   [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='nes'
   [$NINTENDO_POKEMON_MINI]='pokemini'
@@ -413,7 +417,7 @@ declare -a DEFAULT_ESDE_SYSTEMS=(
   $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
   # $NINTENDO_SWITCH
   $NINTENDO_WII
-  $NINTENDO_WIIU
+  # $NINTENDO_WIIU
   $SEGA_32X
   $SEGA_CD
   $SEGA_DREAMCAST
@@ -446,7 +450,7 @@ declare -rA SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP=(
   [$NINTENDO_GAME_BOY]='gb'
   [$NINTENDO_GAME_BOY_ADVANCE]='gba'
   [$NINTENDO_GAME_BOY_COLOR]='gbc'
-  [$NINTENDO_GAMECUBE]='gc'
+  [$NINTENDO_GAMECUBE]='gamecube'
   [$NINTENDO_64]='n64'
   [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='nes'
   [$NINTENDO_POKEMON_MINI]='pokemini'
