@@ -220,20 +220,26 @@ esac
 }
 
 # Source File Mappings
-declare -rA SYSTEM_TO_BIOS_FILES_GLOB_MAP=(
-  [$PICO_8]="pico-8"
-  [$NEC_TURBOGRAFX_CD]="syscard*.pce"
-  [$NINTENDO_FAMICOM_DISK_SYSTEM]="disksys.rom"
-  [$NINTENDO_GAME_BOY_ADVANCE]="gba_bios.bin"
-  [$NINTENDO_GAME_BOY_COLOR]="gbc_bios.bin"
-  [$NINTENDO_GAME_BOY]="gb_bios.bin"
-  [$NINTENDO_POKEMON_MINI]="bios.min"
-  [$NINTENDO_SUPER_GAME_BOY]="sgb.bios"
-  [$SEGA_CD]="bios_CD_*.bin"
-  [$SEGA_DREAMCAST]="dc"
-  [$SONY_PLAYSTATION_2]="SCPH-70012.bin"
-  [$SONY_PLAYSTATION_VITA]="PS*UPDAT.PUP"
-  [$SONY_PLAYSTATION]="psxonpsp660.bin"
+declare -rA SYSTEM_TO_SOURCE_BIOS_FILES_SUBDIRECTORY_MAP=(
+  [$ARCADE_FINALBURNNEO]='Arcade - Final Burn Neo'
+  [$ARCADE_MAME2003PLUS]='Arcade - MAME 2003 Plus'
+  [$NEC_TURBOGRAFX_16]='NEC - PC Engine - TurboGrafx 16'
+  [$NEC_TURBOGRAFX_CD]='NEC - PC Engine CD - TurboGrafx-CD'
+  [$NINTENDO_3DS]='Nintendo - 3DS'
+  [$NINTENDO_DS]='Nintendo - DS'
+  [$NINTENDO_GAME_BOY_ADVANCE]='Nintendo - Game Boy Advance'
+  [$NINTENDO_GAME_BOY_COLOR]='Nintendo - Game Boy Color'
+  [$NINTENDO_GAME_BOY]='Nintendo - Game Boy'
+  [$NINTENDO_GAMECUBE]='Nintendo - GameCube'
+  [$PICO_8]='PICO-8'
+  [$SEGA_CD]='Sega - Sega CD'
+  [$SEGA_DREAMCAST]='Sega - Dreamcast'
+  [$SEGA_SATURN]='Sega - Saturn'
+  [$SNK_NEO_GEO]='SNK - Neo Geo'
+  [$SNK_NEO_GEO_CD]='SNK - Neo Geo CD'
+  [$SONY_PLAYSTATION]='Sony - Playstation'
+  [$SONY_PLAYSTATION_2]='Sony - Playstation 2'
+  [$SONY_PLAYSTATION_VITA]='Sony - Playstation Vita'
 )
 
 declare -rA SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP=(
@@ -281,13 +287,14 @@ copy_bios_files() {
 
   for system in "${systems[@]}"
   do
-    if [[ -v SYSTEM_TO_BIOS_FILES_GLOB_MAP[$system] ]]; then
-      local source_system_bios_files_glob=(${SYSTEM_TO_BIOS_FILES_GLOB_MAP[$system]})
+    if [[ -v SYSTEM_TO_SOURCE_BIOS_FILES_SUBDIRECTORY_MAP[$system] ]]; then
+      local source_system_bios_dir="${SYSTEM_TO_SOURCE_BIOS_FILES_SUBDIRECTORY_MAP[$system]}/"
       local destination_system_bios_directory=$(eval "$get_destination_system_bios_directory_function_name" $system)
-      echo "rsync -avP \"$SOURCE_BIOS_DIR/\"$source_system_bios_files_glob \"$destination_system_bios_directory/\""
-      rsync -avP "$SOURCE_BIOS_DIR/"$source_system_bios_files_glob "$destination_system_bios_directory/"
+      echo "rsync -avP \"${SOURCE_BIOS_DIR}/${source_system_bios_dir}\" \"$destination_system_bios_directory/\""
+      rsync -avP "${SOURCE_BIOS_DIR}/${source_system_bios_dir}" "$destination_system_bios_directory/"
+    # else
+    #   echo "No source BIOS files for $system."
     fi
-
   done
 }
 
