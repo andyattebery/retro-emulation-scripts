@@ -3,26 +3,38 @@
 shopt -s nocasematch
 
 # Directory Paths
-#SOURCE_BIOS_DIR="nas-01:/mnt/storage/Games/System Files"
-#SOURCE_ROMS_DIR="nas-01:/mnt/storage/Games/ROMs/Curated"
-SOURCE_BIOS_DIR="/mnt/storage/Games/System Files"
-SOURCE_ROMS_DIR="/mnt/storage/Games/ROMs/Curated"
+#################
+LOCAL_SOURCE_BIOS_DIR="/mnt/storage/Games/BIOS Files"
+LOCAL_SOURCE_ROMS_DIR="/mnt/storage/Games/ROMs/Curated"
+LOCAL_SOURCE_BATOCERA_ART_DIR="/mnt/storage/Games/Art/Batocera/"
+REMOTE_SOURCE_HOSTNAME="nas-01"
+REMOTE_SOURCE_BIOS_DIR="$REMOTE_SOURCE_HOSTNAME:$LOCAL_SOURCE_BIOS_DIR"
+REMOTE_SOURCE_ROMS_DIR="$REMOTE_SOURCE_HOSTNAME:$LOCAL_SOURCE_ROMS_DIR"
+REMOTE_SOURCE_BATOCERA_ART_DIR="$REMOTE_SOURCE_HOSTNAME:$LOCAL_SOURCE_BATOCERA_ART_DIR"
+
+SOURCE_BIOS_DIR="$REMOTE_SOURCE_BIOS_DIR"
+SOURCE_ROMS_DIR="$REMOTE_SOURCE_ROMS_DIR"
+SOURCE_BATOCERA_ART_DIR="$REMOTE_SOURCE_BATOCERA_ART_DIR"
 
 EMUDECK_ROOT_DIR="/run/media/SDCARDNAME/"
-#ESDE_BIOS_DIR="/Volumes/Android_Emu/BIOS"
-#ESDE_ROMS_DIR="/Volumes/Android_Emu/ROMs"
-ESDE_BIOS_DIR="root@192.168.1.128:/userdata/bios"
-ESDE_ROMS_DIR="root@192.168.1.128:/userdata/roms"
-#ESDE_BIOS_DIR="bazzite@192.168.1.49:/run/media/bazzite/Samsung SSD 860 EVO mSATA 1TB/Emulation/bios"
+ESDE_BIOS_DIR="/Volumes/Android_Emu/BIOS"
+ESDE_ROMS_DIR="/Volumes/Android_Emu/ROMs"
+# KNULLI_REMOTE_HOSTNAME="root@trimui-brick"
+BATOCERA_ROOT_DIR="/Volumes/KNULLI_SD2 1"
 #ESDE_ROMS_DIR="bazzite@192.168.1.49:/run/media/bazzite/Samsung SSD 860 EVO mSATA 1TB/Emulation/roms"
 KNULLI_REMOTE_HOSTNAME="root@trimui-brick"
 MUOS_ROOT_DIR="/Volumes/MUOS_SD2"
-MINUI_ROOT_DIR="/Volumes/MINUI"
+# MINUI_ROOT_DIR="/Volumes/MINUI"
+MINUI_ROOT_DIR="/Volumes/NEXTUI"
 ROCKNIX_REMOTE_HOSTNAME="root@retroid-pocket-5"
+ONION_ROOT_DIR="/Volumes/ONION"
 SPRUCE_ROOT_DIR="/Volumes/SPRUCE"
 
 # System Constants
-readonly ARCADE="ARCADE"
+##################
+readonly ARCADE_FINALBURNNEO="ARCADE_FINALBURNNEO"
+readonly ARCADE_MAME="ARCADE_MAME"
+readonly ARCADE_MAME2003PLUS="ARCADE_MAME2003PLUS"
 readonly ATARI_2600="ATARI_2600"
 readonly ATARI_5200="ATARI_5200"
 readonly ATARI_7800="ATARI_7800"
@@ -30,10 +42,8 @@ readonly ATARI_JAGUAR="ATARI_JAGUAR"
 readonly ATARI_LYNX="ATARI_LYNX"
 readonly CBS_COLECOVISION="CBS_COLECOVISION"
 readonly COMMODORE_64="COMMODORE_64"
-readonly MAME="MAME"
-readonly MAME2003PLUS="MAME2003PLUS"
-readonly MICROSOFT_XBOX_360="MICROSOFT_XBOX_360"
 readonly MICROSOFT_XBOX="MICROSOFT_XBOX"
+readonly MICROSOFT_XBOX_360="MICROSOFT_XBOX_360"
 readonly NEC_SUPERGRAFX="NEC_SUPERGRAFX"
 readonly NEC_TURBOGRAFX_16="NEC_TURBOGRAFX_16"
 readonly NEC_TURBOGRAFX_CD="NEC_TURBOGRAFX_CD"
@@ -73,9 +83,12 @@ readonly SONY_PLAYSTATION_PORTABLE="SONY_PLAYSTATION_PORTABLE"
 readonly SONY_PLAYSTATION_VITA="SONY_PLAYSTATION_VITA"
 readonly SONY_PLAYSTATION="SONY_PLAYSTATION"
 
-# Device Systems
-declare -ra ANBERNIC_RGXX_SYSTEMS=(
+# ROM Pack Systems
+declare -ra LEVEL_1_SYSTEMS=(
+  $ARCADE_FINALBURNNEO
   $PICO_8
+  $NEC_TURBOGRAFX_16
+  $NEC_TURBOGRAFX_CD
   $NINTENDO_GAME_BOY
   $NINTENDO_GAME_BOY_ADVANCE
   $NINTENDO_GAME_BOY_COLOR
@@ -85,141 +98,56 @@ declare -ra ANBERNIC_RGXX_SYSTEMS=(
   $SEGA_CD
   $SEGA_GAME_GEAR
   $SEGA_GENESIS
+  $SNK_NEO_GEO_POCKET_COLOR
 )
 
-declare -ra ANBERNIC_RGXX_ANALOGUE_STICKS_SYSTEMS=(
-  $PICO_8
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  $SEGA_32X
-  $SEGA_CD
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
+declare -ra LEVEL_2_SYSTEMS=(
+  "${LEVEL_1_SYSTEMS[@]}"
   $SONY_PLAYSTATION
 )
 
-declare -ra MIYOO_A30_SYSTEMS=(
-  # $NEC_TURBOGRAFX_16
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  # $NINTENDO_POKEMON_MINI
-  # $NINTENDO_SUPER_GAME_BOY
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  # $PICO_8
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  # $SEGA_MASTER_SYSTEM
-  # $SNK_NEO_GEO_POCKET
-  $SONY_PLAYSTATION
-)
-
-declare -a RAZER_EDGE_SYSTEMS=(
+declare -ra LEVEL_3_SYSTEMS=(
+  "${LEVEL_2_SYSTEMS[@]}"
   $NINTENDO_64
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAMECUBE
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_WII
-  $SEGA_32X
-  $SEGA_CD
   $SEGA_DREAMCAST
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  $SEGA_MASTER_SYSTEM
-  $SEGA_SG_1000
-  $SONY_PLAYSTATION
+  $SEGA_SATURN
+  $SNK_NEO_GEO_CD
 )
 
-declare -a RETROID_POCKET_5_SYSTEMS=(
-  $NINTENDO_64
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_GAME_BOY
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  $SEGA_32X
-  $SEGA_CD
-  $SEGA_DREAMCAST
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  $SEGA_MASTER_SYSTEM
-  $SEGA_SG_1000
-  $SONY_PLAYSTATION
-)
-
-declare -a STEAM_DECK_SYSTEMS=(
-  $NINTENDO_64
-  $NINTENDO_FAMICOM_DISK_SYSTEM
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_GAME_BOY
+declare -ra LEVEL_4_SYSTEMS=(
+  "${LEVEL_3_SYSTEMS[@]}"
   $NINTENDO_GAMECUBE
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
+  $SONY_PLAYSTATION_2
+)
+
+declare -ra LEVEL_5_SYSTEMS=(
+  "${LEVEL_4_SYSTEMS[@]}"
   $NINTENDO_SWITCH
-  $NINTENDO_WII
   $NINTENDO_WIIU
-  $SEGA_32X
-  $SEGA_CD
-  $SEGA_DREAMCAST
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  $SEGA_MASTER_SYSTEM
-  $SEGA_SG_1000
-  $SONY_PLAYSTATION
+  $SONY_PLAYSTATION_3
 )
 
-declare -ra TRIMUI_BRICK_SYSTEMS=(
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  $SEGA_32X
-  $SEGA_CD
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  # $SONY_PLAYSTATION
-)
-
-device_name_to_systems_array() {
+rom_pack_to_systems_array() {
   case "$1" in
-  "anbernic-rgxx" | "anbernic_rgxx" | "rgxx" | "rg35xxsp")
-    echo "ANBERNIC_RGXX_SYSTEMS"
-    ;;
-  "anbernic-rgxx-analog-sticks" | "anbernic_rgxx_analog_sticks" | "rgxx-analog-sticks" | "rgxx_analog_sticks" | "rg35xxh" | "rgcubexx")
-    echo "ANBERNIC_RGXX_ANALOGUE_STICKS_SYSTEMS"
-    ;;
-  "miyoo-a30" | "miyoo_a30" | "a30")
-    echo "MIYOO_A30_SYSTEMS"
-    ;;
-  "razer-edge" | "razer_edge")
-    echo "RAZER_EDGE_SYSTEMS"
-    ;;
-  "retroid-pocket-5" | "retroid_pocket_5")
-    echo "RETROID_POCKET_5_SYSTEMS"
-    ;;
-  "steam-deck" | "steam_deck")
-    echo "STEAM_DECK_SYSTEMS"
-    ;;
-  "trimui-brick" | "trimui_brick" | "trimuibrick")
-    echo "TRIMUI_BRICK_SYSTEMS"
-    ;;
+  "1" | "level-1" | "level_1")
+    echo "LEVEL_1_SYSTEMS" ;;
+  "2" | "level-2" | "level_2")
+    echo "LEVEL_2_SYSTEMS" ;;
+  "3" | "level-3" | "level_3")
+    echo "LEVEL_3_SYSTEMS" ;;
+  "4" | "level-4" | "level_4")
+    echo "LEVEL_4_SYSTEMS" ;;
+  "5" | "level-5" | "level_5")
+    echo "LEVEL_5_SYSTEMS" ;;
   *)
-    echo "$1 is not a supported system."
+    echo "$1 is not a supported ROM pack name."
     return 1
     ;;
 esac
 }
 
 # Source File Mappings
+######################
 declare -rA SYSTEM_TO_SOURCE_BIOS_FILES_SUBDIRECTORY_MAP=(
   [$ARCADE_FINALBURNNEO]='Arcade - Final Burn Neo'
   [$ARCADE_MAME2003PLUS]='Arcade - MAME 2003 Plus'
@@ -243,7 +171,8 @@ declare -rA SYSTEM_TO_SOURCE_BIOS_FILES_SUBDIRECTORY_MAP=(
 )
 
 declare -rA SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP=(
-  [$ARCADE]='MAME 0.274 ROMs (non-merged)'
+  [$ARCADE_FINALBURNNEO]='Arcade - Final Burn Neo (1.0.0.3 Best Set)'
+  [$ARCADE_MAME2003PLUS]='Arcade - MAME 2003 Plus (Tiny Best Set)'
   [$ATARI_2600]='Atari - 2600'
   [$ATARI_5200]='Atari - 5200'
   [$ATARI_7800]='Atari - 7800'
@@ -251,31 +180,129 @@ declare -rA SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP=(
   [$ATARI_LYNX]='Atari - Lynx'
   [$CBS_COLECOVISION]='CBS - Colecovision'
   [$COMMODORE_64]='Commodore - 64'
-  [$PICO_8]='Lexaloffle - PICO-8'
-  [$NEC_TURBOGRAFX_16]='NEC - PC Engine - TurboGrafx 16'
-  [$NEC_TURBOGRAFX_CD]='NEC - PC Engine CD - TurboGrafx-CD'
+  [$NEC_TURBOGRAFX_16]='NEC - TurboGrafx 16'
+  [$NEC_TURBOGRAFX_CD]='NEC - TurboGrafx-CD (Tiny Best Set)'
   [$NINTENDO_64]='Nintendo - Nintendo 64'
+  [$NINTENDO_DS]='Nintendo - Nintendo DS (Retro ROMs Best Set)'
   [$NINTENDO_FAMICOM_DISK_SYSTEM]='Nintendo - Famicom Disk System'
   [$NINTENDO_GAME_BOY_ADVANCE]='Nintendo - Game Boy Advance'
   [$NINTENDO_GAME_BOY_COLOR]='Nintendo - Game Boy Color'
   [$NINTENDO_GAME_BOY]='Nintendo - Game Boy'
-  [$NINTENDO_GAMECUBE]='Nintendo - GameCube'
+  [$NINTENDO_GAMECUBE]='Nintendo - GameCube (Retro ROMs Best Set)'
   [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='Nintendo - Nintendo Entertainment System'
   [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='Nintendo - Super Nintendo Entertainment System'
   [$NINTENDO_SWITCH]='Nintendo - Nintendo Switch'
-  [$NINTENDO_WII]='Nintendo - Wii'
-  [$NINTENDO_WIIU]='Nintendo - WiiU'
+  [$NINTENDO_WII]='Nintendo - Wii (Minimal)'
+  [$PICO_8]='Lexaloffle - PICO-8'
   [$SEGA_32X]='Sega - Sega 32X'
-  [$SEGA_CD]='Sega - Sega CD'
-  [$SEGA_DREAMCAST]='Sega - Dreamcast'
+  [$SEGA_CD]='Sega - Sega CD (Tiny Best Set)'
+  [$SEGA_DREAMCAST]='Sega - Dreamcast (Retro ROMs Best Set)'
   [$SEGA_GAME_GEAR]='Sega - Game Gear'
   [$SEGA_GENESIS]='Sega - Genesis'
   [$SEGA_MASTER_SYSTEM]='Sega - Master System'
+  [$SEGA_SATURN]='Sega - Saturn (Retro ROMs Best Set)'
   [$SEGA_SG_1000]='Sega - SG-1000'
-  [$SONY_PLAYSTATION]='Sony - Playstation'
+  [$SNK_NEO_GEO]='SNK - Neo Geo'
+  [$SNK_NEO_GEO_CD]='SNK - Neo Geo CD'
+  [$SNK_NEO_GEO_POCKET]='SNK - Neo Geo Pocket'
+  [$SNK_NEO_GEO_POCKET_COLOR]='SNK - Neo Geo Pocket Color'
+  [$SONY_PLAYSTATION]='Sony - Playstation (Tiny Best Set)'
+  [$SONY_PLAYSTATION_PORTABLE]='Sony - Playstation Portable (Retro ROMs Best Set)'
 )
 
+# readonly LEVEL_1_ROM_PACK='LEVEL_1_ROM_PACK'
+# readonly LEVEL_2_ROM_PACK='LEVEL_2_ROM_PACK'
+# readonly LEVEL_3_ROM_PACK='LEVEL_3_ROM_PACK'
+# readonly LEVEL_4_ROM_PACK='LEVEL_4_ROM_PACK'
+# readonly LEVEL_5_ROM_PACK='LEVEL_5_ROM_PACK'
+
+# get_source_system_rom_dir() {
+#   local system="$1"
+#   local rom_pack="$2"
+
+#   case "$rom_pack" in
+#   "$LEVEL_1_ROM_PACK")
+
+#     ;;
+#   *)
+#     case "$SYSTEM" in
+#     "$ARCADE_FINALBURNNEO")
+#       echo 'Arcade - Final Burn Neo (1.0.0.3 Best Set)' ;;
+#     "$ARCADE_MAME2003PLUS")
+#       echo 'Arcade - MAME 2003 Plus (Tiny Best Set)' ;;
+#     "$ATARI_2600")
+#       echo 'Atari - 2600' ;;
+#     "$ATARI_5200")
+#       echo 'Atari - 5200' ;;
+#     "$ATARI_7800")
+#       echo 'Atari - 7800' ;;
+#     "$ATARI_JAGUAR")
+#       echo 'Atari - Jaguar' ;;
+#     "$ATARI_LYNX")
+#       echo 'Atari - Lynx' ;;
+#     "$CBS_COLECOVISION")
+#       echo 'CBS - Colecovision' ;;
+#     "$COMMODORE_64")
+#       echo 'Commodore - 64' ;;
+#     "$NEC_TURBOGRAFX_16")
+#       echo 'NEC - TurboGrafx 16' ;;
+#     "$NEC_TURBOGRAFX_CD")
+#       echo 'NEC - TurboGrafx-CD (Tiny Best Set)' ;;
+#     "$NINTENDO_64")
+#       echo 'Nintendo - Nintendo 64' ;;
+#     "$NINTENDO_DS")
+#       echo 'Nintendo - Nintendo DS (Retro ROMs Best Set)' ;;
+#     "$NINTENDO_FAMICOM_DISK_SYSTEM")
+#       echo 'Nintendo - Famicom Disk System' ;;
+#     "$NINTENDO_GAME_BOY_ADVANCE")
+#       echo 'Nintendo - Game Boy Advance' ;;
+#     "$NINTENDO_GAME_BOY_COLOR")
+#       echo 'Nintendo - Game Boy Color' ;;
+#     "$NINTENDO_GAME_BOY")
+#       echo 'Nintendo - Game Boy' ;;
+#     "$NINTENDO_GAMECUBE")
+#       echo 'Nintendo - GameCube (Retro ROMs Best Set)' ;;
+#     "$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM")
+#       echo 'Nintendo - Nintendo Entertainment System' ;;
+#     "$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM")
+#       echo 'Nintendo - Super Nintendo Entertainment System' ;;
+#     "$NINTENDO_SWITCH")
+#       echo 'Nintendo - Nintendo Switch' ;;
+#     "$NINTENDO_WII")
+#       echo 'Nintendo - Wii (Minimal)' ;;
+#     "$PICO_8")
+#       echo 'Lexaloffle - PICO-8' ;;
+#     "$SEGA_32X")
+#       echo 'Sega - Sega 32X' ;;
+#     "$SEGA_CD")
+#       echo 'Sega - Sega CD (Tiny Best Set)' ;;
+#     "$SEGA_DREAMCAST")
+#       echo 'Sega - Dreamcast (Retro ROMs Best Set)' ;;
+#     "$SEGA_GAME_GEAR")
+#       echo 'Sega - Game Gear' ;;
+#     "$SEGA_GENESIS")
+#       echo 'Sega - Genesis' ;;
+#     "$SEGA_MASTER_SYSTEM")
+#       echo 'Sega - Master System' ;;
+#     "$SEGA_SATURN")
+#       echo 'Sega - Saturn (Retro ROMs Best Set)' ;;
+#     "$SEGA_SG_1000")
+#       echo 'Sega - SG-1000' ;;
+#     "$SNK_NEO_GEO")
+#       echo 'SNK - Neo Geo' ;;
+#     "$SNK_NEO_GEO_CD")
+#       echo 'SNK - Neo Geo CD' ;;
+#     "$SNK_NEO_GEO_POCKET")
+#       echo 'SNK - Neo Geo Pocket' ;;
+#     "$SNK_NEO_GEO_POCKET_COLOR")
+#       echo 'SNK - Neo Geo Pocket Color' ;;
+#     esac
+#     ;;
+# esac
+# }
+
 # Copy Functions
+################
 
 # Copies BIOS files for systems to destination directories
 # Arguments:
@@ -325,36 +352,103 @@ copy_rom_files() {
   done
 }
 
-# EmuDeck (https://emudeck.github.io)
-declare -a DEFAULT_EMUDECK_SYSTEMS=(
-  $NINTENDO_64
-  $NINTENDO_FAMICOM_DISK_SYSTEM
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAMECUBE
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  # $NINTENDO_SWITCH
-  $NINTENDO_WII
-  $NINTENDO_WIIU
-  $SEGA_32X
-  $SEGA_CD
-  $SEGA_DREAMCAST
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  $SEGA_MASTER_SYSTEM
-  $SEGA_SG_1000
-  $SONY_PLAYSTATION
+display_source_rom_sizes() {
+  local -n systems="$1"
+  IFS=$'\n' sorted_systems=($(sort <<<"${systems[*]}"))
+  unset IFS
+
+  local system_roms_directories=""
+
+  for system in "${sorted_systems[@]}"; do
+    if [[ -v SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP[$system] ]]; then
+      local source_system_rom_dir="${SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP[$system]}"
+      system_roms_directories+="${LOCAL_SOURCE_ROMS_DIR}/'${source_system_rom_dir}' "
+    fi
+  done
+
+  ssh $REMOTE_SOURCE_HOSTNAME "du --total --summarize --human-readable $system_roms_directories"
+}
+
+# copy_art_files() {
+
+# }
+
+# OS/Frontends
+##############
+
+# Batocera/Knulli
+# https://wiki.batocera.org/systems
+declare -rA SYSTEM_TO_BATOCERA_ROMS_SUBDIR_MAP=(
+  [$ARCADE_FINALBURNNEO]='fbneo'
+  [$ARCADE_MAME2003PLUS]='mame'
+  [$ATARI_2600]='atari2600'
+  [$ATARI_5200]='atari5200'
+  [$ATARI_7800]='atari7800'
+  [$ATARI_JAGUAR]='jaguar'
+  [$ATARI_LYNX]='lynx'
+  [$CBS_COLECOVISION]='colecovision'
+  [$COMMODORE_64]='c64'
+  [$MICROSOFT_XBOX]='xbox'
+  [$MICROSOFT_XBOX_360]='xbox360'
+  [$NEC_SUPERGRAFX]='supergrafx'
+  [$NEC_TURBOGRAFX_CD]='pcenginecd'
+  [$NEC_TURBOGRAFX_16]='pcengine'
+  [$NINTENDO_3DS]='n3ds'
+  [$NINTENDO_DS]='nds'
+  [$NINTENDO_FAMICOM_DISK_SYSTEM]='fds'
+  [$NINTENDO_GAME_BOY]='gb'
+  [$NINTENDO_GAME_BOY_ADVANCE]='gba'
+  [$NINTENDO_GAME_BOY_COLOR]='gbc'
+  [$NINTENDO_GAMECUBE]='gamecube'
+  [$NINTENDO_64]='n64'
+  [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='nes'
+  [$NINTENDO_POKEMON_MINI]='pokemini'
+  [$NINTENDO_SUPER_GAME_BOY]='sgb'
+  [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='snes'
+  [$NINTENDO_SWITCH]='switch'
+  [$NINTENDO_WII]='wii'
+  [$NINTENDO_WIIU]='wiiu'
+  [$PICO_8]='pico8'
+  [$SEGA_DREAMCAST]='dreamcast'
+  [$SEGA_GAME_GEAR]='gamegear'
+  [$SEGA_GENESIS]='megadrive'
+  [$SEGA_MASTER_SYSTEM]='mastersystem'
+  [$SEGA_32X]='sega32x'
+  [$SEGA_CD]='segacd'
+  [$SEGA_SATURN]='saturn'
+  [$SEGA_SG_1000]='sg1000'
+  [$SNK_NEO_GEO]='neogeo'
+  [$SNK_NEO_GEO_CD]='neogeocd'
+  [$SNK_NEO_GEO_POCKET]='ngp'
+  [$SNK_NEO_GEO_POCKET_COLOR]='ngpc'
+  [$SONY_PLAYSTATION]='psx'
+  [$SONY_PLAYSTATION_2]='ps2'
+  [$SONY_PLAYSTATION_PORTABLE]='psp'
+  [$SONY_PLAYSTATION_VITA]='psvita'
 )
 
+get_system_batocera_bios_directory(){
+  # echo "$BATOCERA_REMOTE_HOSTNAME:/userdata/bios"
+  echo "$BATOCERA_ROOT_DIR/bios"
+}
+
+get_system_batocera_roms_directory(){
+  if [[ -v SYSTEM_TO_BATOCERA_ROMS_SUBDIR_MAP[$1] ]]; then
+    # echo "$BATOCERA_REMOTE_HOSTNAME:/userdata/roms/${SYSTEM_TO_BATOCERA_ROMS_SUBDIR_MAP[$1]}"
+    echo "$BATOCERA_ROOT_DIR/roms/${SYSTEM_TO_BATOCERA_ROMS_SUBDIR_MAP[$1]}"
+    return 0
+  fi
+  return 1
+}
+
+# EmuDeck (https://emudeck.github.io)
 get_system_emudeck_bios_directory(){
   echo "$EMUDECK_ROOT_DIR/Emulation/bios"
 }
 
 # https://emudeck.github.io/cheat-sheet/
 declare -rA SYSTEM_TO_EMUDECK_ROMS_SUBDIR_MAP=(
-  [$ARCADE]='arcade'
+  [$ARCADE_MAME2003PLUS]='arcade'
   [$ATARI_2600]='atari2600'
   [$ATARI_5200]='atari5200'
   [$ATARI_7800]='atari7800'
@@ -405,43 +499,15 @@ get_system_emudeck_roms_directory(){
   return 1
 }
 
-copy_to_emudeck() {
-  local enabled_systems_array_name=${1:-DEFAULT_EMUDECK_SYSTEMS}
-
-  copy_bios_files $enabled_systems_array_name "get_system_emudeck_bios_directory"
-  copy_rom_files $enabled_systems_array_name "get_system_emudeck_roms_directory" false
-}
-
 # ES-DE (EmulationStation Desktop Edition) (https://www.es-de.org)
-declare -a DEFAULT_ESDE_SYSTEMS=(
-  $NINTENDO_64
-  $NINTENDO_FAMICOM_DISK_SYSTEM
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAMECUBE
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  # $NINTENDO_SWITCH
-  $NINTENDO_WII
-  # $NINTENDO_WIIU
-  $SEGA_32X
-  $SEGA_CD
-  $SEGA_DREAMCAST
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  $SEGA_MASTER_SYSTEM
-  $SEGA_SG_1000
-  $SONY_PLAYSTATION
-)
-
 get_system_esde_bios_directory(){
   echo "$ESDE_BIOS_DIR"
 }
 
 # systems.txt in ROMs directory
 declare -rA SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP=(
-  [$ARCADE]='arcade'
+  [$ARCADE_FINALBURNNEO]='fbneo'
+  [$ARCADE_MAME2003PLUS]='arcade'
   [$ATARI_2600]='atari2600'
   [$ATARI_5200]='atari5200'
   [$ATARI_7800]='atari7800'
@@ -492,52 +558,7 @@ get_system_esde_roms_directory(){
   return 1
 }
 
-copy_to_esde() {
-  local enabled_systems_array_name=${1:-DEFAULT_ESDE_SYSTEMS}
-  copy_bios_files $enabled_systems_array_name "get_system_esde_bios_directory"
-  copy_rom_files $enabled_systems_array_name "get_system_esde_roms_directory" false
-}
-
-# Knulli
-get_system_knulli_bios_directory(){
-  echo "$KNULLI_REMOTE_HOSTNAME:/userdata/bios"
-}
-
-get_system_knulli_roms_directory(){
-  if [[ -v SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1] ]]; then
-    echo "$KNULLI_REMOTE_HOSTNAME:/userdata/roms/${SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1]}"
-    return 0
-  fi
-  return 1
-}
-
-copy_to_knulli() {
-  local enabled_systems_array_name=${1:-DEFAULT_ESDE_SYSTEMS}
-  copy_bios_files $enabled_systems_array_name "get_system_knulli_bios_directory"
-  copy_rom_files $enabled_systems_array_name "get_system_knull_roms_directory" false
-}
-
 # MinUI (https://github.com/shauninman/MinUI)
-declare -ra DEFAULT_MINUI_SYSTEMS=(
-  # Base
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  $SEGA_GENESIS
-  $SONY_PLAYSTATION
-  # Extras
-  $NEC_TURBOGRAFX_16
-  $NINTENDO_POKEMON_MINI
-  $NINTENDO_SUPER_GAME_BOY
-  $NINTENDO_VIRTUAL_BOY
-  $PICO_8
-  $SEGA_GAME_GEAR
-  $SEGA_MASTER_SYSTEM
-  $SNK_NEO_GEO_POCKET
-)
-
 declare -rA SYSTEM_TO_MINUI_BIOS_SUBDIR_MAP=(
   [$NEC_TURBOGRAFX_CD]="PCE"
   [$NINTENDO_GAME_BOY_ADVANCE]="GBA"
@@ -585,41 +606,37 @@ get_system_minui_roms_directory(){
   return 1
 }
 
-copy_to_minui() {
-  local enabled_systems_array_name=${1:-DEFAULT_MINUI_SYSTEMS}
-
-  copy_bios_files $enabled_systems_array_name "get_system_minui_bios_directory"
-  copy_rom_files $enabled_systems_array_name "get_system_minui_roms_directory" false
-}
-
 # MuOS (https://muos.dev)
-declare -ra DEFAULT_MUOS_SYSTEMS=(
-  $PICO_8
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  $SEGA_32X
-  $SEGA_CD
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  # $SONY_PLAYSTATION
-)
-
 get_system_muos_bios_directory(){
   echo "$MUOS_ROOT_DIR/MUOS/Bios"
 }
 
+declare -rA SYSTEM_TO_MUOS_ROMS_SUBDIR_MAP=(
+  [$PICO_8]='PICO-8'
+  [$NEC_TURBOGRAFX_16]='NEC PC Engine'
+  [$NEC_TURBOGRAFX_CD]='NEC PC Engine CD'
+  [$NINTENDO_GAME_BOY]='Nintendo Game Boy'
+  [$NINTENDO_GAME_BOY_ADVANCE]='Nintendo Game Boy Advance'
+  [$NINTENDO_GAME_BOY_COLOR]='Nintendo Game Boy Color'
+  [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='Nintendo NES-Famicom'
+  [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='Nintendo SNES-SFC'
+  [$SEGA_32X]='Sega 32X'
+  [$SEGA_CD]='Sega Mega CD - Sega CD'
+  [$SEGA_GAME_GEAR]='Sega Game Gear'
+  [$SEGA_GENESIS]='Sega Mega Drive - Genesis'
+  [$SEGA_MASTER_SYSTEM]='Sega Master System'
+  [$SNK_NEO_GEO]='SNK Neo Geo'
+  [$SNK_NEO_GEO_CD]='SNK Neo Geo CD'
+  [$SNK_NEO_GEO_POCKET_COLOR]='SNK Neo Geo Pocket - Color'
+  [$SONY_PLAYSTATION]='Sony PlayStation'
+)
+
 get_system_muos_roms_directory(){
-  echo "$MUOS_ROOT_DIR/ROMS"
-}
-
-copy_to_muos() {
-  local enabled_systems_array_name=${1:-DEFAULT_MUOS_SYSTEMS}
-
-  copy_bios_files $enabled_systems_array_name "get_system_muos_bios_directory"
-  copy_rom_files $enabled_systems_array_name "get_system_muos_roms_directory" true
+    if [[ -v SYSTEM_TO_MUOS_ROMS_SUBDIR_MAP[$1] ]]; then
+    echo "$MUOS_ROOT_DIR/ROMS/${SYSTEM_TO_MUOS_ROMS_SUBDIR_MAP[$1]}"
+    return 0
+  fi
+  return 1
 }
 
 # ROCKNIX (https://rocknix.org)
@@ -636,30 +653,58 @@ get_system_rocknix_roms_directory(){
   return 1
 }
 
-copy_to_rocknix() {
-  local enabled_systems_array_name=${1:-DEFAULT_ESDE_SYSTEMS}
-  copy_bios_files $enabled_systems_array_name "get_system_rocknix_bios_directory"
-  copy_rom_files $enabled_systems_array_name "get_system_rocknix_roms_directory" false
+# Onion (https://onionui.github.io)
+get_system_onion_bios_directory(){
+  echo "$ONION_ROOT_DIR/BIOS"
+}
+
+# https://onionui.github.io/docs/emulators/folders
+declare -rA SYSTEM_TO_ONION_ROMS_SUBDIR_MAP=(
+  [$ATARI_2600]='ATARI'
+  [$ATARI_5200]='FIFTYTWOHUNDRED'
+  [$ATARI_7800]='SEVENTYEIGHTHUNDRED'
+  [$ATARI_LYNX]='LYNX'
+  [$CBS_COLECOVISION]='COLECO'
+  [$COMMODORE_64]='COMMODORE'
+  [$ARCADE_MAME2003PLUS]='ARCADE'
+  [$NEC_SUPERGRAFX]='SGFX'
+  [$NEC_TURBOGRAFX_16]='PCE'
+  [$NEC_TURBOGRAFX_CD]='PCECD'
+  [$NINTENDO_64]='N64'
+  [$NINTENDO_FAMICOM_DISK_SYSTEM]='FDS'
+  [$NINTENDO_DS]='NDS'
+  [$NINTENDO_GAME_BOY]='GB'
+  [$NINTENDO_GAME_BOY_ADVANCE]='GBA'
+  [$NINTENDO_GAME_BOY_COLOR]='GBC'
+  [$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM]='FC'
+  [$NINTENDO_POKEMON_MINI]='POKE'
+  [$NINTENDO_SUPER_GAME_BOY]='SGB'
+  [$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM]='SFC'
+  [$PICO_8]='PICO8'
+  [$SEGA_32X]='THIRTYTWOX'
+  [$SEGA_CD]='SEGACD'
+  [$SEGA_DREAMCAST]='DC'
+  [$SEGA_GAME_GEAR]='GG'
+  [$SEGA_GENESIS]='MD'
+  [$SEGA_MASTER_SYSTEM]='MS'
+  [$SEGA_SG_1000]='SEGASGONE'
+  [$SNK_NEO_GEO]='NEOGEO'
+  [$SNK_NEO_GEO_CD]='NEOCD'
+  [$SNK_NEO_GEO_POCKET]='NGP'
+  [$SNK_NEO_GEO_POCKET_COLOR]='NGPC'
+  [$SONY_PLAYSTATION]='PS'
+  [$SONY_PLAYSTATION_PORTABLE]='PSP'
+)
+
+get_system_onion_roms_directory(){
+  if [[ -v SYSTEM_TO_ONION_ROMS_SUBDIR_MAP[$1] ]]; then
+    echo "$ONION_ROOT_DIR/Roms/${SYSTEM_TO_ONION_ROMS_SUBDIR_MAP[$1]}"
+    return 0
+  fi
+  return 1
 }
 
 # Spruce (https://spruceui.github.io/)
-declare -ra DEFAULT_SPRUCE_SYSTEMS=(
-  # $NEC_TURBOGRAFX_16
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  # $NINTENDO_POKEMON_MINI
-  # $NINTENDO_SUPER_GAME_BOY
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  # $PICO_8
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  # $SEGA_MASTER_SYSTEM
-  # $SNK_NEO_GEO_POCKET
-  $SONY_PLAYSTATION
-)
-
 get_system_spruce_bios_directory(){
   echo "$SPRUCE_ROOT_DIR/BIOS"
 }
@@ -672,7 +717,7 @@ declare -rA SYSTEM_TO_SPRUCE_ROMS_SUBDIR_MAP=(
   [$ATARI_LYNX]='LYNX'
   [$CBS_COLECOVISION]='COLECO'
   [$COMMODORE_64]='COMMODORE'
-  [$MAME2003PLUS]='MAME2003PLUS'
+  [$ARCADE_MAME2003PLUS]='ARCADE_MAME2003PLUS'
   [$NEC_SUPERGRAFX]='SGFX'
   [$NEC_TURBOGRAFX_16]='PCE'
   [$NEC_TURBOGRAFX_CD]='PCECD'
@@ -710,44 +755,52 @@ get_system_spruce_roms_directory(){
   return 1
 }
 
-copy_to_spruce() {
-  local enabled_systems_array_name=${1:-DEFAULT_SPRUCE_SYSTEMS}
-
-  copy_bios_files "$enabled_systems_array_name" "get_system_spruce_bios_directory"
-  copy_rom_files "$enabled_systems_array_name" "get_system_spruce_roms_directory" false
-}
-
 # Main
 destination_type=$(echo "$1" | tr '[:upper:]' '[:lower:]')
 
 systems_array_name=""
 if [ -n "$2" ]; then
   device=$(echo "$2" | tr '[:upper:]' '[:lower:]')
-  systems_array_name=$(device_name_to_systems_array $device)
+  systems_array_name=$(rom_pack_to_systems_array $device)
 fi
 
+destination_root_dir="$3"
+
 case "$destination_type" in
+  "batocera" | "knulli")
+    copy_bios_files $systems_array_name "get_system_batocera_bios_directory"
+    copy_rom_files $systems_array_name "get_system_batocera_roms_directory" false
+    ;;
   "emudeck")
-    copy_to_emudeck "$systems_array_name"
+    copy_bios_files $systems_array_name "get_system_emudeck_bios_directory"
+    copy_rom_files $systems_array_name "get_system_emudeck_roms_directory" false
     ;;
   "esde")
-    copy_to_esde "$systems_array_name"
-    ;;
-  "knulli")
-    copy_to_knulli "$systems_array_name"
+    copy_bios_files $systems_array_name "get_system_esde_bios_directory"
+    copy_rom_files $systems_array_name "get_system_esde_roms_directory" false
     ;;
   "minui")
-    copy_to_minui "$systems_array_name"
+    copy_bios_files $systems_array_name "get_system_minui_bios_directory"
+    copy_rom_files $systems_array_name "get_system_minui_roms_directory" false
     ;;
   "muos")
-    copy_to_muos "$systems_array_name"
+    copy_bios_files $systems_array_name "get_system_muos_bios_directory"
+    copy_rom_files $systems_array_name "get_system_muos_roms_directory" false
+    ;;
+  "onion")
+    copy_bios_files "$systems_array_name" "get_system_onion_bios_directory"
+    copy_rom_files "$systems_array_name" "get_system_onion_roms_directory" false
     ;;
   "rocknix")
-    copy_to_rocknix "$systems_array_name"
+    copy_bios_files $systems_array_name "get_system_rocknix_bios_directory"
+    copy_rom_files $systems_array_name "get_system_rocknix_roms_directory" false
     ;;
   "spruce")
-    copy_to_spruce "$systems_array_name"
+    copy_bios_files "$systems_array_name" "get_system_spruce_bios_directory"
+    copy_rom_files "$systems_array_name" "get_system_spruce_roms_directory" false
     ;;
+  "sizes" | "rom-sizes" | "rom_sizes")
+    display_source_rom_sizes "$systems_array_name" ;;
   *)
     echo "$1 is not a supported destination OS/application."
     exit 1
