@@ -25,7 +25,7 @@ BATOCERA_ROOT_DIR="/Volumes/KNULLI_SD2 1"
 KNULLI_REMOTE_HOSTNAME="root@trimui-brick"
 MUOS_ROOT_DIR="/Volumes/MUOS_SD2"
 # MINUI_ROOT_DIR="/Volumes/MINUI"
-MINUI_ROOT_DIR="/Volumes/NEXTUI"
+MINUI_ROOT_DIR="/Volumes/TUI_BRICK"
 ROCKNIX_REMOTE_HOSTNAME="root@retroid-pocket-5"
 ONION_ROOT_DIR="/Volumes/ONION"
 SPRUCE_ROOT_DIR="/Volumes/SPRUCE"
@@ -85,46 +85,46 @@ readonly SONY_PLAYSTATION="SONY_PLAYSTATION"
 
 # ROM Pack Systems
 declare -ra LEVEL_1_SYSTEMS=(
-  $ARCADE_FINALBURNNEO
-  $PICO_8
-  $NEC_TURBOGRAFX_16
-  $NEC_TURBOGRAFX_CD
-  $NINTENDO_GAME_BOY
-  $NINTENDO_GAME_BOY_ADVANCE
-  $NINTENDO_GAME_BOY_COLOR
-  $NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM
-  $NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM
-  $SEGA_32X
-  $SEGA_CD
-  $SEGA_GAME_GEAR
-  $SEGA_GENESIS
-  $SNK_NEO_GEO_POCKET_COLOR
+  "$ARCADE_FINALBURNNEO"
+  "$PICO_8"
+  "$NEC_TURBOGRAFX_16"
+  "$NEC_TURBOGRAFX_CD"
+  "$NINTENDO_GAME_BOY"
+  "$NINTENDO_GAME_BOY_ADVANCE"
+  "$NINTENDO_GAME_BOY_COLOR"
+  "$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM"
+  "$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM"
+  "$SEGA_32X"
+  "$SEGA_CD"
+  "$SEGA_GAME_GEAR"
+  "$SEGA_GENESIS"
+  "$SNK_NEO_GEO_POCKET_COLOR"
 )
 
 declare -ra LEVEL_2_SYSTEMS=(
   "${LEVEL_1_SYSTEMS[@]}"
-  $SONY_PLAYSTATION
+  "$SONY_PLAYSTATION"
 )
 
 declare -ra LEVEL_3_SYSTEMS=(
   "${LEVEL_2_SYSTEMS[@]}"
-  $NINTENDO_64
-  $SEGA_DREAMCAST
-  $SEGA_SATURN
-  $SNK_NEO_GEO_CD
+  "$NINTENDO_64"
+  "$SEGA_DREAMCAST"
+  "$SEGA_SATURN"
+  "$SNK_NEO_GEO_CD"
 )
 
 declare -ra LEVEL_4_SYSTEMS=(
   "${LEVEL_3_SYSTEMS[@]}"
-  $NINTENDO_GAMECUBE
-  $SONY_PLAYSTATION_2
+  "$NINTENDO_GAMECUBE"
+  "$SONY_PLAYSTATION_2"
 )
 
 declare -ra LEVEL_5_SYSTEMS=(
   "${LEVEL_4_SYSTEMS[@]}"
-  $NINTENDO_SWITCH
-  $NINTENDO_WIIU
-  $SONY_PLAYSTATION_3
+  "$NINTENDO_SWITCH"
+  "$NINTENDO_WIIU"
+  "$SONY_PLAYSTATION_3"
 )
 
 rom_pack_to_systems_array() {
@@ -143,7 +143,7 @@ rom_pack_to_systems_array() {
     echo "$1 is not a supported ROM pack name."
     return 1
     ;;
-esac
+  esac
 }
 
 # Source File Mappings
@@ -210,97 +210,6 @@ declare -rA SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP=(
   [$SONY_PLAYSTATION_PORTABLE]='Sony - Playstation Portable (Retro ROMs Best Set)'
 )
 
-# readonly LEVEL_1_ROM_PACK='LEVEL_1_ROM_PACK'
-# readonly LEVEL_2_ROM_PACK='LEVEL_2_ROM_PACK'
-# readonly LEVEL_3_ROM_PACK='LEVEL_3_ROM_PACK'
-# readonly LEVEL_4_ROM_PACK='LEVEL_4_ROM_PACK'
-# readonly LEVEL_5_ROM_PACK='LEVEL_5_ROM_PACK'
-
-# get_source_system_rom_dir() {
-#   local system="$1"
-#   local rom_pack="$2"
-
-#   case "$rom_pack" in
-#   "$LEVEL_1_ROM_PACK")
-
-#     ;;
-#   *)
-#     case "$SYSTEM" in
-#     "$ARCADE_FINALBURNNEO")
-#       echo 'Arcade - Final Burn Neo (1.0.0.3 Best Set)' ;;
-#     "$ARCADE_MAME2003PLUS")
-#       echo 'Arcade - MAME 2003 Plus (Tiny Best Set)' ;;
-#     "$ATARI_2600")
-#       echo 'Atari - 2600' ;;
-#     "$ATARI_5200")
-#       echo 'Atari - 5200' ;;
-#     "$ATARI_7800")
-#       echo 'Atari - 7800' ;;
-#     "$ATARI_JAGUAR")
-#       echo 'Atari - Jaguar' ;;
-#     "$ATARI_LYNX")
-#       echo 'Atari - Lynx' ;;
-#     "$CBS_COLECOVISION")
-#       echo 'CBS - Colecovision' ;;
-#     "$COMMODORE_64")
-#       echo 'Commodore - 64' ;;
-#     "$NEC_TURBOGRAFX_16")
-#       echo 'NEC - TurboGrafx 16' ;;
-#     "$NEC_TURBOGRAFX_CD")
-#       echo 'NEC - TurboGrafx-CD (Tiny Best Set)' ;;
-#     "$NINTENDO_64")
-#       echo 'Nintendo - Nintendo 64' ;;
-#     "$NINTENDO_DS")
-#       echo 'Nintendo - Nintendo DS (Retro ROMs Best Set)' ;;
-#     "$NINTENDO_FAMICOM_DISK_SYSTEM")
-#       echo 'Nintendo - Famicom Disk System' ;;
-#     "$NINTENDO_GAME_BOY_ADVANCE")
-#       echo 'Nintendo - Game Boy Advance' ;;
-#     "$NINTENDO_GAME_BOY_COLOR")
-#       echo 'Nintendo - Game Boy Color' ;;
-#     "$NINTENDO_GAME_BOY")
-#       echo 'Nintendo - Game Boy' ;;
-#     "$NINTENDO_GAMECUBE")
-#       echo 'Nintendo - GameCube (Retro ROMs Best Set)' ;;
-#     "$NINTENDO_NINTENDO_ENTERTAINMENT_SYSTEM")
-#       echo 'Nintendo - Nintendo Entertainment System' ;;
-#     "$NINTENDO_SUPER_NINTENDO_ENTERTAINMENT_SYSTEM")
-#       echo 'Nintendo - Super Nintendo Entertainment System' ;;
-#     "$NINTENDO_SWITCH")
-#       echo 'Nintendo - Nintendo Switch' ;;
-#     "$NINTENDO_WII")
-#       echo 'Nintendo - Wii (Minimal)' ;;
-#     "$PICO_8")
-#       echo 'Lexaloffle - PICO-8' ;;
-#     "$SEGA_32X")
-#       echo 'Sega - Sega 32X' ;;
-#     "$SEGA_CD")
-#       echo 'Sega - Sega CD (Tiny Best Set)' ;;
-#     "$SEGA_DREAMCAST")
-#       echo 'Sega - Dreamcast (Retro ROMs Best Set)' ;;
-#     "$SEGA_GAME_GEAR")
-#       echo 'Sega - Game Gear' ;;
-#     "$SEGA_GENESIS")
-#       echo 'Sega - Genesis' ;;
-#     "$SEGA_MASTER_SYSTEM")
-#       echo 'Sega - Master System' ;;
-#     "$SEGA_SATURN")
-#       echo 'Sega - Saturn (Retro ROMs Best Set)' ;;
-#     "$SEGA_SG_1000")
-#       echo 'Sega - SG-1000' ;;
-#     "$SNK_NEO_GEO")
-#       echo 'SNK - Neo Geo' ;;
-#     "$SNK_NEO_GEO_CD")
-#       echo 'SNK - Neo Geo CD' ;;
-#     "$SNK_NEO_GEO_POCKET")
-#       echo 'SNK - Neo Geo Pocket' ;;
-#     "$SNK_NEO_GEO_POCKET_COLOR")
-#       echo 'SNK - Neo Geo Pocket Color' ;;
-#     esac
-#     ;;
-# esac
-# }
-
 # Copy Functions
 ################
 
@@ -314,8 +223,8 @@ copy_bios_files() {
 
   for system in "${systems[@]}"
   do
-    if [[ -v SYSTEM_TO_SOURCE_BIOS_FILES_SUBDIRECTORY_MAP[$system] ]]; then
-      local source_system_bios_dir="${SYSTEM_TO_SOURCE_BIOS_FILES_SUBDIRECTORY_MAP[$system]}/"
+    if [[ ${SYSTEM_TO_SOURCE_BIOS_FILES_SUBDIRECTORY_MAP["$system"]+isset} ]]; then
+      local source_system_bios_dir="${SYSTEM_TO_SOURCE_BIOS_FILES_SUBDIRECTORY_MAP["$system"]}/"
       local destination_system_bios_directory=$(eval "$get_destination_system_bios_directory_function_name" $system)
       echo "rsync -avP \"${SOURCE_BIOS_DIR}/${source_system_bios_dir}\" \"$destination_system_bios_directory/\""
       rsync -avP "${SOURCE_BIOS_DIR}/${source_system_bios_dir}" "$destination_system_bios_directory/"
@@ -337,8 +246,8 @@ copy_rom_files() {
   local should_copy_source_directory=${3:-a_string_value_that_is_not_true}
 
   for system in "${systems[@]}"; do
-    if [[ -v SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP[$system] ]]; then
-      local source_system_rom_dir="${SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP[$system]}"
+    if [[ ${SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP["$system"]+isset} ]]; then
+      local source_system_rom_dir="${SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP["$system"]}/"
       if [ ! $should_copy_source_directory = true ]; then
         source_system_rom_dir="${source_system_rom_dir}/"
       fi
@@ -360,18 +269,14 @@ display_source_rom_sizes() {
   local system_roms_directories=""
 
   for system in "${sorted_systems[@]}"; do
-    if [[ -v SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP[$system] ]]; then
-      local source_system_rom_dir="${SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP[$system]}"
+    if [[ ${SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP["$system"]+isset} ]]; then
+      local source_system_rom_dir="${SYSTEM_TO_SOURCE_ROMS_SUBDIRECTORY_MAP["$system"]}/"
       system_roms_directories+="${LOCAL_SOURCE_ROMS_DIR}/'${source_system_rom_dir}' "
     fi
   done
 
   ssh $REMOTE_SOURCE_HOSTNAME "du --total --summarize --human-readable $system_roms_directories"
 }
-
-# copy_art_files() {
-
-# }
 
 # OS/Frontends
 ##############
@@ -433,9 +338,9 @@ get_system_batocera_bios_directory(){
 }
 
 get_system_batocera_roms_directory(){
-  if [[ -v SYSTEM_TO_BATOCERA_ROMS_SUBDIR_MAP[$1] ]]; then
+  if [[ -v SYSTEM_TO_BATOCERA_ROMS_SUBDIR_MAP["$1"] ]]; then
     # echo "$BATOCERA_REMOTE_HOSTNAME:/userdata/roms/${SYSTEM_TO_BATOCERA_ROMS_SUBDIR_MAP[$1]}"
-    echo "$BATOCERA_ROOT_DIR/roms/${SYSTEM_TO_BATOCERA_ROMS_SUBDIR_MAP[$1]}"
+    echo "$BATOCERA_ROOT_DIR/roms/${SYSTEM_TO_BATOCERA_ROMS_SUBDIR_MAP["$1"]}"
     return 0
   fi
   return 1
@@ -493,7 +398,7 @@ declare -rA SYSTEM_TO_EMUDECK_ROMS_SUBDIR_MAP=(
 
 get_system_emudeck_roms_directory(){
   if [[ -v SYSTEM_TO_EMUDECK_ROMS_SUBDIR_MAP[$1] ]]; then
-    echo "$EMUDECK_ROOT_DIR/Emulation/roms/${SYSTEM_TO_ESDE_ROMS_SUBDIR_MAP[$1]}"
+    echo "$EMUDECK_ROOT_DIR/Emulation/roms/${SYSTEM_TO_EMUDECK_ROMS_SUBDIR_MAP[$1]}"
     return 0
   fi
   return 1
