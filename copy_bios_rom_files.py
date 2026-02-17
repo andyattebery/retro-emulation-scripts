@@ -191,8 +191,6 @@ class Frontend(ABC):
 class Batocera(Frontend):
     """Batocera/Knulli frontend (https://wiki.batocera.org/systems)."""
 
-    DEFAULT_ROOT_DIR = "/Volumes/KNULLI_SD2 1"
-
     ROMS_SUBDIRS: dict[System, str] = {
         System.ARCADE_FINALBURNNEO: "fbneo",
         System.ARCADE_MAME2003PLUS: "mame",
@@ -208,7 +206,7 @@ class Batocera(Frontend):
         System.NEC_SUPERGRAFX: "supergrafx",
         System.NEC_TURBOGRAFX_CD: "pcenginecd",
         System.NEC_TURBOGRAFX_16: "pcengine",
-        System.NINTENDO_3DS: "n3ds",
+        System.NINTENDO_3DS: "3ds",
         System.NINTENDO_DS: "nds",
         System.NINTENDO_FAMICOM_DISK_SYSTEM: "fds",
         System.NINTENDO_GAME_BOY: "gb",
@@ -242,21 +240,21 @@ class Batocera(Frontend):
         System.SONY_PLAYSTATION_VITA: "psvita",
     }
 
-    def __init__(self, root_dir: str = DEFAULT_ROOT_DIR):
-        self._root_dir = root_dir
+    def __init__(self, destination_dir: str):
+        self._destination_dir = destination_dir
 
     @property
     def name(self) -> str:
         return "Batocera"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._root_dir}/bios"
+        return f"{self._destination_dir}/bios"
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._root_dir}/roms/{subdir}"
+        return f"{self._destination_dir}/roms/{subdir}"
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -273,8 +271,6 @@ class Knulli(Batocera):
 
 class EmuDeck(Frontend):
     """EmuDeck frontend (https://emudeck.github.io)."""
-
-    DEFAULT_ROOT_DIR = "/run/media/SDCARDNAME/"
 
     ROMS_SUBDIRS: dict[System, str] = {
         System.ARCADE_MAME2003PLUS: "arcade",
@@ -320,21 +316,21 @@ class EmuDeck(Frontend):
         System.SONY_PLAYSTATION_VITA: "psvita",
     }
 
-    def __init__(self, root_dir: str = DEFAULT_ROOT_DIR):
-        self._root_dir = root_dir
+    def __init__(self, destination_dir: str):
+        self._destination_dir = destination_dir
 
     @property
     def name(self) -> str:
         return "EmuDeck"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._root_dir}/Emulation/bios"
+        return f"{self._destination_dir}/Emulation/bios"
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._root_dir}/Emulation/roms/{subdir}"
+        return f"{self._destination_dir}/Emulation/roms/{subdir}"
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -343,9 +339,6 @@ class EmuDeck(Frontend):
 
 class EsDe(Frontend):
     """ES-DE (EmulationStation Desktop Edition) frontend (https://www.es-de.org)."""
-
-    DEFAULT_BIOS_DIR = "/Volumes/Android_Emu/BIOS"
-    DEFAULT_ROMS_DIR = "/Volumes/Android_Emu/ROMs"
 
     ROMS_SUBDIRS: dict[System, str] = {
         System.ARCADE_FINALBURNNEO: "fbneo",
@@ -361,11 +354,11 @@ class EsDe(Frontend):
         System.NEC_TURBOGRAFX_16: "tg16",
         System.NINTENDO_3DS: "n3ds",
         System.NINTENDO_DS: "nds",
-        System.NINTENDO_FAMICOM_DISK_SYSTEM: "famicom",
+        System.NINTENDO_FAMICOM_DISK_SYSTEM: "fds",
         System.NINTENDO_GAME_BOY: "gb",
         System.NINTENDO_GAME_BOY_ADVANCE: "gba",
         System.NINTENDO_GAME_BOY_COLOR: "gbc",
-        System.NINTENDO_GAMECUBE: "gamecube",
+        System.NINTENDO_GAMECUBE: "gc",
         System.NINTENDO_64: "n64",
         System.NINTENDO_NES: "nes",
         System.NINTENDO_POKEMON_MINI: "pokemini",
@@ -392,24 +385,21 @@ class EsDe(Frontend):
         System.SONY_PLAYSTATION_VITA: "psvita",
     }
 
-    def __init__(
-        self, bios_dir: str = DEFAULT_BIOS_DIR, roms_dir: str = DEFAULT_ROMS_DIR
-    ):
-        self._bios_dir = bios_dir
-        self._roms_dir = roms_dir
+    def __init__(self, destination_dir: str):
+        self._destination_dir = destination_dir
 
     @property
     def name(self) -> str:
         return "ES-DE"
 
     def bios_directory(self, system: System) -> str | None:
-        return self._bios_dir
+        return f"{self._destination_dir}/BIOS"
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._roms_dir}/{subdir}"
+        return f"{self._destination_dir}/ROMs/{subdir}"
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -418,8 +408,6 @@ class EsDe(Frontend):
 
 class MinUI(Frontend):
     """MinUI frontend (https://github.com/shauninman/MinUI)."""
-
-    DEFAULT_ROOT_DIR = "/Volumes/TUI_BRICK"
 
     BIOS_SUBDIRS: dict[System, str] = {
         System.NEC_TURBOGRAFX_CD: "PCE",
@@ -450,8 +438,8 @@ class MinUI(Frontend):
         System.SONY_PLAYSTATION: "Sony PlayStation (PS)",
     }
 
-    def __init__(self, root_dir: str = DEFAULT_ROOT_DIR):
-        self._root_dir = root_dir
+    def __init__(self, destination_dir: str):
+        self._destination_dir = destination_dir
 
     @property
     def name(self) -> str:
@@ -461,13 +449,13 @@ class MinUI(Frontend):
         subdir = self.BIOS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._root_dir}/Bios/{subdir}"
+        return f"{self._destination_dir}/Bios/{subdir}"
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._root_dir}/Roms/{subdir}"
+        return f"{self._destination_dir}/Roms/{subdir}"
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -476,8 +464,6 @@ class MinUI(Frontend):
 
 class MuOS(Frontend):
     """MuOS frontend (https://muos.dev)."""
-
-    DEFAULT_ROOT_DIR = "/Volumes/MUOS_SD2"
 
     ROMS_SUBDIRS: dict[System, str] = {
         System.PICO_8: "PICO-8",
@@ -499,21 +485,21 @@ class MuOS(Frontend):
         System.SONY_PLAYSTATION: "Sony PlayStation",
     }
 
-    def __init__(self, root_dir: str = DEFAULT_ROOT_DIR):
-        self._root_dir = root_dir
+    def __init__(self, destination_dir: str):
+        self._destination_dir = destination_dir
 
     @property
     def name(self) -> str:
         return "MuOS"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._root_dir}/MUOS/Bios"
+        return f"{self._destination_dir}/MUOS/Bios"
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._root_dir}/ROMS/{subdir}"
+        return f"{self._destination_dir}/ROMS/{subdir}"
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -523,23 +509,21 @@ class MuOS(Frontend):
 class Rocknix(Frontend):
     """ROCKNIX frontend (https://rocknix.org)."""
 
-    DEFAULT_REMOTE_HOSTNAME = "root@retroid-pocket-5"
-
-    def __init__(self, remote_hostname: str = DEFAULT_REMOTE_HOSTNAME):
-        self._remote_hostname = remote_hostname
+    def __init__(self, destination_dir: str):
+        self._destination_dir = destination_dir
 
     @property
     def name(self) -> str:
         return "ROCKNIX"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._remote_hostname}:/storage/roms/bios"
+        return f"{self._destination_dir}/bios"
 
     def roms_directory(self, system: System) -> str | None:
         subdir = EsDe.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._remote_hostname}:/storage/roms/{subdir}"
+        return f"{self._destination_dir}/{subdir}"
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -548,8 +532,6 @@ class Rocknix(Frontend):
 
 class Onion(Frontend):
     """Onion frontend (https://onionui.github.io)."""
-
-    DEFAULT_ROOT_DIR = "/Volumes/ONION"
 
     ROMS_SUBDIRS: dict[System, str] = {
         System.ATARI_2600: "ATARI",
@@ -572,7 +554,7 @@ class Onion(Frontend):
         System.NINTENDO_POKEMON_MINI: "POKE",
         System.NINTENDO_SUPER_GAME_BOY: "SGB",
         System.NINTENDO_SNES: "SFC",
-        System.PICO_8: "PICO8",
+        System.PICO_8: "PICO",
         System.SEGA_32X: "THIRTYTWOX",
         System.SEGA_CD: "SEGACD",
         System.SEGA_DREAMCAST: "DC",
@@ -588,21 +570,21 @@ class Onion(Frontend):
         System.SONY_PLAYSTATION_PORTABLE: "PSP",
     }
 
-    def __init__(self, root_dir: str = DEFAULT_ROOT_DIR):
-        self._root_dir = root_dir
+    def __init__(self, destination_dir: str):
+        self._destination_dir = destination_dir
 
     @property
     def name(self) -> str:
         return "Onion"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._root_dir}/BIOS"
+        return f"{self._destination_dir}/BIOS"
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._root_dir}/Roms/{subdir}"
+        return f"{self._destination_dir}/Roms/{subdir}"
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -612,8 +594,6 @@ class Onion(Frontend):
 class Spruce(Frontend):
     """Spruce frontend (https://spruceui.github.io/)."""
 
-    DEFAULT_ROOT_DIR = "/Volumes/SPRUCE"
-
     ROMS_SUBDIRS: dict[System, str] = {
         System.ATARI_2600: "ATARI",
         System.ATARI_5200: "FIFTYTWOHUNDRED",
@@ -621,7 +601,7 @@ class Spruce(Frontend):
         System.ATARI_LYNX: "LYNX",
         System.CBS_COLECOVISION: "COLECO",
         System.COMMODORE_64: "COMMODORE",
-        System.ARCADE_MAME2003PLUS: "ARCADE_MAME2003PLUS",
+        System.ARCADE_MAME2003PLUS: "MAME2003PLUS",
         System.NEC_SUPERGRAFX: "SGFX",
         System.NEC_TURBOGRAFX_16: "PCE",
         System.NEC_TURBOGRAFX_CD: "PCECD",
@@ -651,21 +631,21 @@ class Spruce(Frontend):
         System.SONY_PLAYSTATION_PORTABLE: "PSP",
     }
 
-    def __init__(self, root_dir: str = DEFAULT_ROOT_DIR):
-        self._root_dir = root_dir
+    def __init__(self, destination_dir: str):
+        self._destination_dir = destination_dir
 
     @property
     def name(self) -> str:
         return "Spruce"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._root_dir}/BIOS"
+        return f"{self._destination_dir}/BIOS"
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._root_dir}/Roms/{subdir}"
+        return f"{self._destination_dir}/Roms/{subdir}"
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -780,12 +760,12 @@ class FrontendFactory:
     }
 
     @classmethod
-    def create(cls, name: str) -> Frontend | None:
+    def create(cls, name: str, destination_dir: str) -> Frontend | None:
         """Create a frontend instance by name."""
         frontend_class = cls._FRONTENDS.get(name.lower())
         if not frontend_class:
             return None
-        return frontend_class()
+        return frontend_class(destination_dir)
 
     @classmethod
     def available_frontends(cls) -> list[str]:
@@ -867,18 +847,16 @@ def main() -> int:
         help=f"Destination OS/application ({', '.join(FrontendFactory.available_frontends())}, sizes)",
     )
     parser.add_argument(
+        "destination_dir",
+        type=str,
+        help="Destination root directory",
+    )
+    parser.add_argument(
         "level",
         type=str,
         nargs="?",
         default="",
         help="ROM pack level (1-5 or level-1 through level-5)",
-    )
-    parser.add_argument(
-        "root_dir",
-        type=str,
-        nargs="?",
-        default="",
-        help="Optional destination root directory",
     )
 
     args = parser.parse_args()
@@ -897,7 +875,7 @@ def main() -> int:
         RomSizeDisplay.display(systems, source_config)
         return 0
 
-    frontend = FrontendFactory.create(destination_type)
+    frontend = FrontendFactory.create(destination_type, args.destination_dir)
     if not frontend:
         print(f"{args.destination} is not a supported destination OS/application.")
         print(f"Available: {', '.join(FrontendFactory.available_frontends())}")

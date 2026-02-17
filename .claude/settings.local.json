@@ -5,7 +5,17 @@
       "Bash(python3 -m py_compile:*)",
       "Bash(python3:*)",
       "Bash(ruby -c:*)",
-      "Bash(ruby:*)"
+      "Bash(ruby:*)",
+      "WebFetch(domain:wiki.batocera.org)",
+      "WebFetch(domain:emudeck.github.io)",
+      "WebFetch(domain:www.es-de.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:muos.dev)",
+      "WebFetch(domain:rocknix.org)",
+      "WebFetch(domain:onionui.github.io)",
+      "WebFetch(domain:spruceui.github.io)",
+      "WebFetch(domain:gitlab.com)",
+      "WebSearch"
     ]
   }
 }
