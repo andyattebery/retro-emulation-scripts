@@ -6,6 +6,7 @@ import subprocess
 import sys
 from abc import ABC, abstractmethod
 from enum import Enum
+from pathlib import PurePosixPath
 
 
 class System(Enum):
@@ -139,30 +140,40 @@ class SourceConfig:
         local_roms_dir: str = DEFAULT_LOCAL_ROMS_DIR,
         local_batocera_art_dir: str = DEFAULT_LOCAL_BATOCERA_ART_DIR,
         remote_hostname: str = DEFAULT_REMOTE_HOSTNAME,
+        remote_source: bool = True,
     ):
         self.local_bios_dir = local_bios_dir
         self.local_roms_dir = local_roms_dir
         self.local_batocera_art_dir = local_batocera_art_dir
         self.remote_hostname = remote_hostname
+        self._remote_source = remote_source
+
+    def _prefix(self, path: str) -> str:
+        if self._remote_source:
+            return f"{self.remote_hostname}:{path}"
+        return path
 
     @property
     def bios_dir(self) -> str:
-        """Remote BIOS directory path."""
-        return f"{self.remote_hostname}:{self.local_bios_dir}"
+        """BIOS directory path."""
+        return self._prefix(self.local_bios_dir)
 
     @property
     def roms_dir(self) -> str:
-        """Remote ROMs directory path."""
-        return f"{self.remote_hostname}:{self.local_roms_dir}"
+        """ROMs directory path."""
+        return self._prefix(self.local_roms_dir)
 
     @property
     def batocera_art_dir(self) -> str:
-        """Remote Batocera art directory path."""
-        return f"{self.remote_hostname}:{self.local_batocera_art_dir}"
+        """Batocera art directory path."""
+        return self._prefix(self.local_batocera_art_dir)
 
 
 class Frontend(ABC):
     """Abstract base class for emulation frontends."""
+
+    def __init__(self, destination_dir: str):
+        self._destination_dir = destination_dir
 
     @property
     @abstractmethod
@@ -248,13 +259,13 @@ class Batocera(Frontend):
         return "Batocera"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._destination_dir}/bios"
+        return str(PurePosixPath(self._destination_dir) / "bios")
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._destination_dir}/roms/{subdir}"
+        return str(PurePosixPath(self._destination_dir) / "roms" / subdir)
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -324,13 +335,13 @@ class EmuDeck(Frontend):
         return "EmuDeck"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._destination_dir}/Emulation/bios"
+        return str(PurePosixPath(self._destination_dir) / "Emulation" / "bios")
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._destination_dir}/Emulation/roms/{subdir}"
+        return str(PurePosixPath(self._destination_dir) / "Emulation" / "roms" / subdir)
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -393,13 +404,13 @@ class EsDe(Frontend):
         return "ES-DE"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._destination_dir}/BIOS"
+        return str(PurePosixPath(self._destination_dir) / "BIOS")
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._destination_dir}/ROMs/{subdir}"
+        return str(PurePosixPath(self._destination_dir) / "ROMs" / subdir)
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -449,13 +460,13 @@ class MinUI(Frontend):
         subdir = self.BIOS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._destination_dir}/Bios/{subdir}"
+        return str(PurePosixPath(self._destination_dir) / "Bios" / subdir)
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._destination_dir}/Roms/{subdir}"
+        return str(PurePosixPath(self._destination_dir) / "Roms" / subdir)
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -493,13 +504,13 @@ class MuOS(Frontend):
         return "MuOS"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._destination_dir}/MUOS/Bios"
+        return str(PurePosixPath(self._destination_dir) / "MUOS" / "Bios")
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._destination_dir}/ROMS/{subdir}"
+        return str(PurePosixPath(self._destination_dir) / "ROMS" / subdir)
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -517,13 +528,13 @@ class Rocknix(Frontend):
         return "ROCKNIX"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._destination_dir}/bios"
+        return str(PurePosixPath(self._destination_dir) / "bios")
 
     def roms_directory(self, system: System) -> str | None:
         subdir = EsDe.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._destination_dir}/{subdir}"
+        return str(PurePosixPath(self._destination_dir) / subdir)
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -578,13 +589,13 @@ class Onion(Frontend):
         return "Onion"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._destination_dir}/BIOS"
+        return str(PurePosixPath(self._destination_dir) / "BIOS")
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._destination_dir}/Roms/{subdir}"
+        return str(PurePosixPath(self._destination_dir) / "Roms" / subdir)
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -639,13 +650,13 @@ class Spruce(Frontend):
         return "Spruce"
 
     def bios_directory(self, system: System) -> str | None:
-        return f"{self._destination_dir}/BIOS"
+        return str(PurePosixPath(self._destination_dir) / "BIOS")
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return f"{self._destination_dir}/Roms/{subdir}"
+        return str(PurePosixPath(self._destination_dir) / "Roms" / subdir)
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -676,8 +687,8 @@ class FileCopier:
             if not destination_dir:
                 continue
 
-            source_path = f"{self._source_config.bios_dir}/{source_subdir}/"
-            destination_path = f"{destination_dir}/"
+            source_path = str(PurePosixPath(self._source_config.bios_dir) / source_subdir) + "/"
+            destination_path = destination_dir + "/"
 
             self._rsync(source_path, destination_path)
 
@@ -700,21 +711,23 @@ class FileCopier:
                 )
                 continue
 
-            source_path = f"{self._source_config.roms_dir}/{source_subdir}/"
+            source_path = str(PurePosixPath(self._source_config.roms_dir) / source_subdir) + "/"
             if not copy_source_directory:
                 source_path += "/"
-            destination_path = f"{destination_dir}/"
+            destination_path = destination_dir
 
             self._rsync(source_path, destination_path)
 
     def _rsync(self, source: str, destination: str) -> None:
         """Execute rsync command."""
-        print(f'rsync -avP "{source}" "{destination}"')
+        print(f'rsync -avP --size-only "{source}" "{destination}"')
 
         if self._dry_run:
             return
 
-        subprocess.run(["rsync", "-avP", source, destination], check=False)
+        subprocess.run(
+            ["rsync", "-avP", "--size-only", source, destination], check=False
+        )
 
 
 class RomSizeDisplay:
@@ -730,7 +743,9 @@ class RomSizeDisplay:
             source_subdir = SourceConfig.ROMS_SUBDIRS.get(system)
             if not source_subdir:
                 continue
-            rom_directories.append(f"{source_config.local_roms_dir}/'{source_subdir}/'")
+            path = PurePosixPath(source_config.local_roms_dir) / source_subdir
+            rom_directories.append(f"'{path}/'")
+
 
         if not rom_directories:
             return
@@ -849,7 +864,9 @@ def main() -> int:
     parser.add_argument(
         "destination_dir",
         type=str,
-        help="Destination root directory",
+        nargs="?",
+        default="",
+        help="Destination root directory (required for all destinations except sizes)",
     )
     parser.add_argument(
         "level",
@@ -862,18 +879,33 @@ def main() -> int:
     args = parser.parse_args()
     destination_type = args.destination.lower()
 
-    source_config = SourceConfig()
+    remote_destination = ":" in (args.destination_dir or "")
+    source_config = SourceConfig(remote_source=not remote_destination)
 
-    systems: list[System] = []
-    if args.level:
-        if not LevelConfig.is_valid_level(args.level):
-            print(f"{args.level} is not a supported ROM pack name.")
-            return 1
-        systems = LevelConfig.systems_for_level(args.level) or []
-
+    # For sizes, destination_dir is unused; treat it as the level if provided.
     if destination_type in ("sizes", "rom-sizes", "rom_sizes"):
+        level = args.destination_dir or args.level
+        systems: list[System] = []
+        if level:
+            if not LevelConfig.is_valid_level(level):
+                print(f"{level} is not a supported ROM pack name.")
+                return 1
+            systems = LevelConfig.systems_for_level(level) or []
         RomSizeDisplay.display(systems, source_config)
         return 0
+
+    if not args.destination_dir:
+        print("destination_dir is required.")
+        parser.print_usage()
+        return 1
+
+    level = args.level
+    systems: list[System] = []
+    if level:
+        if not LevelConfig.is_valid_level(level):
+            print(f"{level} is not a supported ROM pack name.")
+            return 1
+        systems = LevelConfig.systems_for_level(level) or []
 
     frontend = FrontendFactory.create(destination_type, args.destination_dir)
     if not frontend:
