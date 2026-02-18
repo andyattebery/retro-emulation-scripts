@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["pyyaml"]
+# ///
 """Copy BIOS and ROM files to various emulation frontends and operating systems."""
 
 import argparse
@@ -6,7 +10,9 @@ import subprocess
 import sys
 from abc import ABC, abstractmethod
 from enum import Enum
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
+
+import yaml
 
 
 class System(Enum):
@@ -67,86 +73,40 @@ class System(Enum):
 class SourceConfig:
     """Source directory configuration."""
 
-    DEFAULT_LOCAL_BIOS_DIR = "/mnt/storage/Games/BIOS Files"
-    DEFAULT_LOCAL_ROMS_DIR = "/mnt/storage/Games/ROMs/Curated"
-    DEFAULT_LOCAL_BATOCERA_ART_DIR = "/mnt/storage/Games/Art/Batocera/"
-    DEFAULT_REMOTE_HOSTNAME = "nas-01"
-
-    BIOS_SUBDIRS: dict[System, str] = {
-        System.ARCADE_FINALBURNNEO: "Arcade - Final Burn Neo",
-        System.ARCADE_MAME2003PLUS: "Arcade - MAME 2003 Plus",
-        System.NEC_TURBOGRAFX_16: "NEC - PC Engine - TurboGrafx 16",
-        System.NEC_TURBOGRAFX_CD: "NEC - PC Engine CD - TurboGrafx-CD",
-        System.NINTENDO_3DS: "Nintendo - 3DS",
-        System.NINTENDO_DS: "Nintendo - DS",
-        System.NINTENDO_GAME_BOY_ADVANCE: "Nintendo - Game Boy Advance",
-        System.NINTENDO_GAME_BOY_COLOR: "Nintendo - Game Boy Color",
-        System.NINTENDO_GAME_BOY: "Nintendo - Game Boy",
-        System.NINTENDO_GAMECUBE: "Nintendo - GameCube",
-        System.PICO_8: "PICO-8",
-        System.SEGA_CD: "Sega - Sega CD",
-        System.SEGA_DREAMCAST: "Sega - Dreamcast",
-        System.SEGA_SATURN: "Sega - Saturn",
-        System.SNK_NEO_GEO: "SNK - Neo Geo",
-        System.SNK_NEO_GEO_CD: "SNK - Neo Geo CD",
-        System.SONY_PLAYSTATION: "Sony - Playstation",
-        System.SONY_PLAYSTATION_2: "Sony - Playstation 2",
-        System.SONY_PLAYSTATION_VITA: "Sony - Playstation Vita",
-    }
-
-    ROMS_SUBDIRS: dict[System, str] = {
-        System.ARCADE_FINALBURNNEO: "Arcade - Final Burn Neo (1.0.0.3 Best Set)",
-        System.ARCADE_MAME2003PLUS: "Arcade - MAME 2003 Plus (Tiny Best Set)",
-        System.ATARI_2600: "Atari - 2600",
-        System.ATARI_5200: "Atari - 5200",
-        System.ATARI_7800: "Atari - 7800",
-        System.ATARI_JAGUAR: "Atari - Jaguar",
-        System.ATARI_LYNX: "Atari - Lynx",
-        System.CBS_COLECOVISION: "CBS - Colecovision",
-        System.COMMODORE_64: "Commodore - 64",
-        System.NEC_TURBOGRAFX_16: "NEC - TurboGrafx 16",
-        System.NEC_TURBOGRAFX_CD: "NEC - TurboGrafx-CD (Tiny Best Set)",
-        System.NINTENDO_64: "Nintendo - Nintendo 64",
-        System.NINTENDO_DS: "Nintendo - Nintendo DS (Retro ROMs Best Set)",
-        System.NINTENDO_FAMICOM_DISK_SYSTEM: "Nintendo - Famicom Disk System",
-        System.NINTENDO_GAME_BOY_ADVANCE: "Nintendo - Game Boy Advance",
-        System.NINTENDO_GAME_BOY_COLOR: "Nintendo - Game Boy Color",
-        System.NINTENDO_GAME_BOY: "Nintendo - Game Boy",
-        System.NINTENDO_GAMECUBE: "Nintendo - GameCube (Retro ROMs Best Set)",
-        System.NINTENDO_NES: "Nintendo - Nintendo Entertainment System",
-        System.NINTENDO_SNES: "Nintendo - Super Nintendo Entertainment System",
-        System.NINTENDO_SWITCH: "Nintendo - Nintendo Switch",
-        System.NINTENDO_WII: "Nintendo - Wii (Minimal)",
-        System.PICO_8: "Lexaloffle - PICO-8",
-        System.SEGA_32X: "Sega - Sega 32X",
-        System.SEGA_CD: "Sega - Sega CD (Tiny Best Set)",
-        System.SEGA_DREAMCAST: "Sega - Dreamcast (Retro ROMs Best Set)",
-        System.SEGA_GAME_GEAR: "Sega - Game Gear",
-        System.SEGA_GENESIS: "Sega - Genesis",
-        System.SEGA_MASTER_SYSTEM: "Sega - Master System",
-        System.SEGA_SATURN: "Sega - Saturn (Retro ROMs Best Set)",
-        System.SEGA_SG_1000: "Sega - SG-1000",
-        System.SNK_NEO_GEO: "SNK - Neo Geo",
-        System.SNK_NEO_GEO_CD: "SNK - Neo Geo CD",
-        System.SNK_NEO_GEO_POCKET: "SNK - Neo Geo Pocket",
-        System.SNK_NEO_GEO_POCKET_COLOR: "SNK - Neo Geo Pocket Color",
-        System.SONY_PLAYSTATION: "Sony - Playstation (Tiny Best Set)",
-        System.SONY_PLAYSTATION_PORTABLE: "Sony - Playstation Portable (Retro ROMs Best Set)",
-    }
-
     def __init__(
         self,
-        local_bios_dir: str = DEFAULT_LOCAL_BIOS_DIR,
-        local_roms_dir: str = DEFAULT_LOCAL_ROMS_DIR,
-        local_batocera_art_dir: str = DEFAULT_LOCAL_BATOCERA_ART_DIR,
-        remote_hostname: str = DEFAULT_REMOTE_HOSTNAME,
-        remote_source: bool = True,
+        source_bios_dir: str,
+        source_roms_dir: str,
+        source_batocera_art_dir: str,
+        remote_hostname: str,
+        remote_source: bool,
+        bios_subdirs: dict[System, str],
+        roms_subdirs: dict[System, str],
     ):
-        self.local_bios_dir = local_bios_dir
-        self.local_roms_dir = local_roms_dir
-        self.local_batocera_art_dir = local_batocera_art_dir
+        self.source_bios_dir = source_bios_dir
+        self.source_roms_dir = source_roms_dir
+        self.source_batocera_art_dir = source_batocera_art_dir
         self.remote_hostname = remote_hostname
         self._remote_source = remote_source
+        self.bios_subdirs = bios_subdirs
+        self.roms_subdirs = roms_subdirs
+
+    @classmethod
+    def from_yaml(cls, path: str | Path, remote_source: bool = True) -> "SourceConfig":
+        """Load source configuration from a YAML file."""
+        with open(path) as f:
+            data = yaml.safe_load(f)
+        bios_subdirs = {System(k): v for k, v in data["bios_subdirs"].items()}
+        roms_subdirs = {System(k): v for k, v in data["roms_subdirs"].items()}
+        return cls(
+            source_bios_dir=data["source_bios_dir"],
+            source_roms_dir=data["source_roms_dir"],
+            source_batocera_art_dir=data["source_batocera_art_dir"],
+            remote_hostname=data["remote_hostname"],
+            remote_source=remote_source,
+            bios_subdirs=bios_subdirs,
+            roms_subdirs=roms_subdirs,
+        )
 
     def _prefix(self, path: str) -> str:
         if self._remote_source:
@@ -156,17 +116,17 @@ class SourceConfig:
     @property
     def bios_dir(self) -> str:
         """BIOS directory path."""
-        return self._prefix(self.local_bios_dir)
+        return self._prefix(self.source_bios_dir)
 
     @property
     def roms_dir(self) -> str:
         """ROMs directory path."""
-        return self._prefix(self.local_roms_dir)
+        return self._prefix(self.source_roms_dir)
 
     @property
     def batocera_art_dir(self) -> str:
         """Batocera art directory path."""
-        return self._prefix(self.local_batocera_art_dir)
+        return self._prefix(self.source_batocera_art_dir)
 
 
 class Frontend(ABC):
@@ -679,7 +639,7 @@ class FileCopier:
     def copy_bios_files(self, systems: list[System]) -> None:
         """Copy BIOS files for the given systems."""
         for system in systems:
-            source_subdir = SourceConfig.BIOS_SUBDIRS.get(system)
+            source_subdir = self._source_config.bios_subdirs.get(system)
             if not source_subdir:
                 continue
 
@@ -697,7 +657,7 @@ class FileCopier:
     ) -> None:
         """Copy ROM files for the given systems."""
         for system in systems:
-            source_subdir = SourceConfig.ROMS_SUBDIRS.get(system)
+            source_subdir = self._source_config.roms_subdirs.get(system)
 
             if not source_subdir:
                 print(f"No source ROMS for {system.value}.")
@@ -740,10 +700,10 @@ class RomSizeDisplay:
         rom_directories: list[str] = []
 
         for system in sorted_systems:
-            source_subdir = SourceConfig.ROMS_SUBDIRS.get(system)
+            source_subdir = source_config.roms_subdirs.get(system)
             if not source_subdir:
                 continue
-            path = PurePosixPath(source_config.local_roms_dir) / source_subdir
+            path = PurePosixPath(source_config.source_roms_dir) / source_subdir
             rom_directories.append(f"'{path}/'")
 
 
@@ -880,7 +840,8 @@ def main() -> int:
     destination_type = args.destination.lower()
 
     remote_destination = ":" in (args.destination_dir or "")
-    source_config = SourceConfig(remote_source=not remote_destination)
+    yaml_path = Path(__file__).parent / "source_config.yaml"
+    source_config = SourceConfig.from_yaml(yaml_path, remote_source=not remote_destination)
 
     # For sizes, destination_dir is unused; treat it as the level if provided.
     if destination_type in ("sizes", "rom-sizes", "rom_sizes"):
