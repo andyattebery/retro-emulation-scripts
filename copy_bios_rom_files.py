@@ -565,6 +565,15 @@ class Onion(Frontend):
 class RetroDeck(EsDe):
     """RetroDeck frontend (uses ES-DE structure) (https://retrodeck.readthedocs.io/en/latest/)."""
 
+    def bios_directory(self, system: System) -> str | None:
+        return str(PurePosixPath(self._destination_dir) / "bios")
+
+    def roms_directory(self, system: System) -> str | None:
+        subdir = self.ROMS_SUBDIRS.get(system)
+        if not subdir:
+            return None
+        return str(PurePosixPath(self._destination_dir) / "roms" / subdir)
+
     @property
     def name(self) -> str:
         return "RetroDeck"
