@@ -562,6 +562,13 @@ class Onion(Frontend):
         return self.ROMS_SUBDIRS
 
 
+class RetroDeck(EsDe):
+    """RetroDeck frontend (uses ES-DE structure) (https://retrodeck.readthedocs.io/en/latest/)."""
+
+    @property
+    def name(self) -> str:
+        return "RetroDeck"
+
 class Spruce(Frontend):
     """Spruce frontend (https://spruceui.github.io/)."""
 
@@ -731,6 +738,7 @@ class FrontendFactory:
         "muos": MuOS,
         "rocknix": Rocknix,
         "onion": Onion,
+        "retrodeck": RetroDeck,
         "spruce": Spruce,
     }
 
