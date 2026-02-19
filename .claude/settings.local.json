@@ -15,7 +15,12 @@
       "WebFetch(domain:onionui.github.io)",
       "WebFetch(domain:spruceui.github.io)",
       "WebFetch(domain:gitlab.com)",
-      "WebSearch"
+      "WebSearch",
+      "mcp__ide__getDiagnostics",
+      "Bash(git -C /Users/andy/Projects/retro-emulation-scripts status)",
+      "Bash(git -C /Users/andy/Projects/retro-emulation-scripts diff copy_bios_rom_files.py)",
+      "Bash(git -C /Users/andy/Projects/retro-emulation-scripts log --oneline -5)",
+      "Bash(git -C /Users/andy/Projects/retro-emulation-scripts reset HEAD copy_bios_rom_files.py)"
     ]
   }
 }

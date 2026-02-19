@@ -671,7 +671,7 @@ class FileCopier:
                 )
                 continue
 
-            source_path = str(PurePosixPath(self._source_config.roms_dir) / source_subdir) + "/"
+            source_path = str(PurePosixPath(self._source_config.roms_dir) / source_subdir)
             if not copy_source_directory:
                 source_path += "/"
             destination_path = destination_dir
