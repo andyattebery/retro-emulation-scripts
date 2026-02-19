@@ -794,10 +794,12 @@ class LevelConfig:
         System.SEGA_DREAMCAST,
         System.SEGA_SATURN,
         System.SNK_NEO_GEO_CD,
+        System.SONY_PLAYSTATION_PORTABLE,
     ]
 
     _LEVEL_4_SYSTEMS: list[System] = _LEVEL_3_SYSTEMS + [
         System.NINTENDO_GAMECUBE,
+        System.NINTENDO_WII,
         System.SONY_PLAYSTATION_2,
     ]
 
