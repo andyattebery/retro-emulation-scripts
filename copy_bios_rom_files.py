@@ -392,21 +392,23 @@ class MinUI(Frontend):
     }
 
     ROMS_SUBDIRS: dict[System, str] = {
-        System.PICO_8: "Pico-8 (P8)",
-        System.NEC_TURBOGRAFX_16: "TurboGrafx-16 (PCE)",
+        # Base
         System.NINTENDO_GAME_BOY: "Game Boy (GB)",
-        System.NINTENDO_GAME_BOY_ADVANCE: "Game Boy Advance (GBA)",
         System.NINTENDO_GAME_BOY_COLOR: "Game Boy Color (GBC)",
+        System.NINTENDO_GAME_BOY_ADVANCE: "Game Boy Advance (GBA)",
         System.NINTENDO_NES: "Nintendo Entertainment System (FC)",
-        System.NINTENDO_POKEMON_MINI: "Pokémon mini (PKM)",
         System.NINTENDO_SNES: "Super Nintendo Entertainment System (SFC)",
-        System.NINTENDO_VIRTUAL_BOY: "Virtual Boy (VB)",
-        System.SEGA_GAME_GEAR: "Sega Game Gear (GG)",
         System.SEGA_GENESIS: "Sega Genesis (MD)",
-        System.SEGA_MASTER_SYSTEM: "Sega Master System (SMS)",
-        System.SEGA_CD: "Sega CD (MD)",
-        System.SNK_NEO_GEO_POCKET_COLOR: "Neo Geo Pocket Color (NGPC)",
         System.SONY_PLAYSTATION: "Sony PlayStation (PS)",
+
+        # Extras
+        System.SNK_NEO_GEO_POCKET_COLOR: "Neo Geo Pocket Color (NGPC)",
+        System.PICO_8: "Pico-8 (P8)",
+        System.NINTENDO_POKEMON_MINI: "Pokémon mini (PKM)",
+        System.SEGA_GAME_GEAR: "Sega Game Gear (GG)",
+        System.SEGA_MASTER_SYSTEM: "Sega Master System (SMS)",
+        System.NEC_TURBOGRAFX_16: "TurboGrafx-16 (PCE)",
+        System.NINTENDO_VIRTUAL_BOY: "Virtual Boy (VB)",
     }
 
     def __init__(self, destination_dir: str):
@@ -476,6 +478,56 @@ class MuOS(Frontend):
     def _roms_subdirs(self) -> dict[System, str]:
         return self.ROMS_SUBDIRS
 
+
+class NextUI(MinUI):
+    """NextUI frontend (https://nextui.loveretro.games/docs/)."""
+
+    BIOS_SUBDIRS: dict[System, str] = {
+        **MinUI.BIOS_SUBDIRS,
+        System.NINTENDO_SUPER_GAME_BOY: "SGB",
+        System.PICO_8: "P8"
+    }
+
+    ROMS_SUBDIRS: dict[System, str] = {
+        # Base (Included in the Base CFW)
+        System.NINTENDO_GAME_BOY: "Game Boy (GB)",
+        System.NINTENDO_GAME_BOY_COLOR: "Game Boy Color (GBC)",
+        System.NINTENDO_GAME_BOY_ADVANCE: "Game Boy Advance (GBA)",
+        System.NINTENDO_SUPER_GAME_BOY: "Super Game Boy (SGB)",
+        System.NINTENDO_NES: "Nintendo Entertainment System (FC)",
+        System.NINTENDO_SNES: "Super Nintendo Entertainment System (SFC)",
+        System.SONY_PLAYSTATION: "Sony PlayStation (PS)",
+        System.SEGA_GENESIS: "Sega Genesis (MD)",
+        System.SEGA_MASTER_SYSTEM: "Sega Master System (SMS)",
+        System.SEGA_GAME_GEAR: "Sega Game Gear (GG)",
+        System.SEGA_32X: "Sega 32X (32X)",
+        System.SEGA_CD: "Sega CD (SEGACD)",
+        System.SEGA_SG_1000: "Sega SG-1000 (SG1000)",
+
+        # Extras (Additional emulators (extra.zip))
+        System.ARCADE_FINALBURNNEO: "Arcade (FBN)",
+        System.ATARI_2600: "Atari 2600 (A2600)",
+        System.ATARI_5200: "Atari 5200 (A5200)",
+        System.ATARI_7800: "Atari 7800 (A7800)",
+        System.ATARI_LYNX: "Atari Lynx (LYNX)",
+        System.CBS_COLECOVISION: "Colecovision (COLECO)",
+        System.COMMODORE_64: "Commodore 64 (C64)",
+        System.NINTENDO_FAMICOM_DISK_SYSTEM: "Famicom Disk System (FDS)",
+        System.NEC_TURBOGRAFX_16: "TurboGrafx-16 (PCE)",
+        System.SNK_NEO_GEO_POCKET: "Neo Geo Pocket (NGP)",
+        System.SNK_NEO_GEO_POCKET_COLOR: "Neo Geo Pocket Color (NGPC)",
+        System.PICO_8: "Pico-8 (P8)",
+        System.NINTENDO_POKEMON_MINI: "Pokémon mini (PKM)",
+        System.NINTENDO_VIRTUAL_BOY: "Virtual Boy (VB)",
+    }
+
+    def __init__(self, destination_dir: str):
+        self._destination_dir = destination_dir
+
+    @property
+    def name(self) -> str:
+        return "NextUI"
+    
 
 class Rocknix(Frontend):
     """ROCKNIX frontend (https://rocknix.org)."""
@@ -740,14 +792,15 @@ class FrontendFactory:
 
     _FRONTENDS: dict[str, type[Frontend]] = {
         "batocera": Batocera,
-        "knulli": Knulli,
         "emudeck": EmuDeck,
         "esde": EsDe,
+        "knulli": Knulli,
         "minui": MinUI,
         "muos": MuOS,
-        "rocknix": Rocknix,
+        "nextui": NextUI,
         "onion": Onion,
         "retrodeck": RetroDeck,
+        "rocknix": Rocknix,
         "spruce": Spruce,
     }
 
@@ -778,6 +831,7 @@ class LevelConfig:
         System.NINTENDO_GAME_BOY_COLOR,
         System.NINTENDO_NES,
         System.NINTENDO_SNES,
+        System.NINTENDO_SUPER_GAME_BOY,
         System.SEGA_32X,
         System.SEGA_CD,
         System.SEGA_GAME_GEAR,
