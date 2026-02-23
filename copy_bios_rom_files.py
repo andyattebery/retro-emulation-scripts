@@ -78,6 +78,8 @@ class SourceConfig:
         source_bios_dir: str,
         source_roms_dir: str,
         source_batocera_art_dir: str,
+        source_batocera_scraped_media_dir: str,
+        source_esde_scraped_media_dir: str,
         remote_hostname: str,
         remote_source: bool,
         bios_subdirs: dict[System, str],
@@ -86,6 +88,8 @@ class SourceConfig:
         self.source_bios_dir = source_bios_dir
         self.source_roms_dir = source_roms_dir
         self.source_batocera_art_dir = source_batocera_art_dir
+        self.source_batocera_scraped_media_dir = source_batocera_scraped_media_dir
+        self.source_esde_scraped_media_dir = source_esde_scraped_media_dir
         self.remote_hostname = remote_hostname
         self._remote_source = remote_source
         self.bios_subdirs = bios_subdirs
@@ -102,6 +106,8 @@ class SourceConfig:
             source_bios_dir=data["source_bios_dir"],
             source_roms_dir=data["source_roms_dir"],
             source_batocera_art_dir=data["source_batocera_art_dir"],
+            source_batocera_scraped_media_dir=data["source_batocera_scraped_media_dir"],
+            source_esde_scraped_media_dir=data["source_esde_scraped_media_dir"],
             remote_hostname=data["remote_hostname"],
             remote_source=remote_source,
             bios_subdirs=bios_subdirs,
@@ -128,6 +134,16 @@ class SourceConfig:
         """Batocera art directory path."""
         return self._prefix(self.source_batocera_art_dir)
 
+    @property
+    def batocera_scraped_media_dir(self) -> str:
+        """Batocera scraped media directory path."""
+        return self._prefix(self.source_batocera_scraped_media_dir)
+
+    @property
+    def esde_scraped_media_dir(self) -> str:
+        """ES-DE scraped media directory path."""
+        return self._prefix(self.source_esde_scraped_media_dir)
+
 
 class Frontend(ABC):
     """Abstract base class for emulation frontends."""
@@ -147,6 +163,14 @@ class Frontend(ABC):
     @abstractmethod
     def roms_directory(self, system: System) -> str | None:
         """Return the ROMs directory for a system."""
+
+    @abstractmethod
+    def source_scraped_media_dir(self, system: System, source_config: "SourceConfig") -> str | None:
+        """Return the source scraped media base directory, or None if unsupported."""
+
+    @abstractmethod
+    def destination_scraped_media_dir(self, system: System) -> str | None:
+        """Return the destination scraped media directory for a system, or None if unsupported."""
 
     @property
     def supported_systems(self) -> list[System]:
@@ -222,6 +246,18 @@ class Batocera(Frontend):
         return str(PurePosixPath(self._destination_dir) / "bios")
 
     def roms_directory(self, system: System) -> str | None:
+        subdir = self.ROMS_SUBDIRS.get(system)
+        if not subdir:
+            return None
+        return str(PurePosixPath(self._destination_dir) / "roms" / subdir)
+
+    def source_scraped_media_dir(self, system: System, source_config: "SourceConfig") -> str | None:
+        subdir = self.ROMS_SUBDIRS.get(system)
+        if not subdir:
+            return None
+        return str(PurePosixPath(source_config.source_batocera_scraped_media_dir) / subdir)
+
+    def destination_scraped_media_dir(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
@@ -303,6 +339,12 @@ class EmuDeck(Frontend):
             return None
         return str(PurePosixPath(self._destination_dir) / "Emulation" / "roms" / subdir)
 
+    def source_scraped_media_dir(self, system: System, source_config: "SourceConfig") -> str | None:
+        return None
+
+    def destination_scraped_media_dir(self, system: System) -> str | None:
+        return None
+
     @property
     def _roms_subdirs(self) -> dict[System, str]:
         return self.ROMS_SUBDIRS
@@ -370,7 +412,19 @@ class EsDe(Frontend):
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return str(PurePosixPath(self._destination_dir) / "ROMs" / subdir)
+        return str(PurePosixPath(self._destination_dir) / "ES-DE ROMs" / subdir)
+
+    def source_scraped_media_dir(self, system: System, source_config: "SourceConfig") -> str | None:
+        subdir = self.ROMS_SUBDIRS.get(system)
+        if not subdir:
+            return None
+        return str(PurePosixPath(source_config.esde_scraped_media_dir) / subdir)
+
+    def destination_scraped_media_dir(self, system: System) -> str | None:
+        subdir = self.ROMS_SUBDIRS.get(system)
+        if not subdir:
+            return None
+        return str(PurePosixPath(self._destination_dir) / "downloaded_media" / subdir)
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -430,6 +484,12 @@ class MinUI(Frontend):
             return None
         return str(PurePosixPath(self._destination_dir) / "Roms" / subdir)
 
+    def source_scraped_media_dir(self, system: System, source_config: "SourceConfig") -> str | None:
+        return None
+
+    def destination_scraped_media_dir(self, system: System) -> str | None:
+        return None
+
     @property
     def _roms_subdirs(self) -> dict[System, str]:
         return self.ROMS_SUBDIRS
@@ -473,6 +533,12 @@ class MuOS(Frontend):
         if not subdir:
             return None
         return str(PurePosixPath(self._destination_dir) / "ROMS" / subdir)
+
+    def source_scraped_media_dir(self, system: System, source_config: "SourceConfig") -> str | None:
+        return None
+
+    def destination_scraped_media_dir(self, system: System) -> str | None:
+        return None
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -548,6 +614,12 @@ class Rocknix(Frontend):
             return None
         return str(PurePosixPath(self._destination_dir) / subdir)
 
+    def source_scraped_media_dir(self, system: System, source_config: "SourceConfig") -> str | None:
+        return None
+
+    def destination_scraped_media_dir(self, system: System) -> str | None:
+        return None
+
     @property
     def _roms_subdirs(self) -> dict[System, str]:
         return EsDe.ROMS_SUBDIRS
@@ -608,6 +680,12 @@ class Onion(Frontend):
         if not subdir:
             return None
         return str(PurePosixPath(self._destination_dir) / "Roms" / subdir)
+
+    def source_scraped_media_dir(self, system: System, source_config: "SourceConfig") -> str | None:
+        return None
+
+    def destination_scraped_media_dir(self, system: System) -> str | None:
+        return None
 
     @property
     def _roms_subdirs(self) -> dict[System, str]:
@@ -686,6 +764,12 @@ class Spruce(Frontend):
             return None
         return str(PurePosixPath(self._destination_dir) / "Roms" / subdir)
 
+    def source_scraped_media_dir(self, system: System, source_config: "SourceConfig") -> str | None:
+        return None
+
+    def destination_scraped_media_dir(self, system: System) -> str | None:
+        return None
+
     @property
     def _roms_subdirs(self) -> dict[System, str]:
         return self.ROMS_SUBDIRS
@@ -746,6 +830,22 @@ class FileCopier:
 
             self._rsync(source_path, destination_path)
 
+    def copy_scraped_media_files(self, systems: list[System]) -> None:
+        """Copy scraped media files for the given systems."""
+        for system in systems:
+            source_dir = self._frontend.source_scraped_media_dir(system, self._source_config)
+            if not source_dir:
+                continue
+
+            destination_dir = self._frontend.destination_scraped_media_dir(system)
+            if not destination_dir:
+                continue
+
+            source_path = source_dir + "/"
+            destination_path = destination_dir + "/"
+
+            self._rsync(source_path, destination_path)
+
     def _rsync(self, source: str, destination: str) -> None:
         """Execute rsync command."""
         print(f'rsync -avP --size-only "{source}" "{destination}"')
@@ -754,7 +854,7 @@ class FileCopier:
             return
 
         subprocess.run(
-            ["rsync", "-avP", "--size-only", source, destination], check=False
+            ["rsync", "-avP", "--size-only", "--exclude=.DS_Store", source, destination], check=False
         )
 
 
@@ -950,6 +1050,7 @@ def main() -> int:
     copier = FileCopier(frontend, source_config)
     copier.copy_bios_files(systems)
     copier.copy_rom_files(systems)
+    copier.copy_scraped_media_files(systems)
 
     return 0
 
