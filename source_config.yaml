@@ -24,6 +24,7 @@ bios_subdirs:
   snk_neo_geo_cd: "SNK - Neo Geo CD"
   sony_playstation: "Sony - Playstation"
   sony_playstation_2: "Sony - Playstation 2"
+  nintendo_switch: "Nintendo - Switch"
   sony_playstation_vita: "Sony - Playstation Vita"
 
 roms_subdirs:

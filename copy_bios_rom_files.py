@@ -243,6 +243,9 @@ class Batocera(Frontend):
         return "Batocera"
 
     def bios_directory(self, system: System) -> str | None:
+        if system == System.NINTENDO_GAMECUBE:
+            return str(PurePosixPath(self._destination_dir) / "bios" / "GC")
+
         return str(PurePosixPath(self._destination_dir) / "bios")
 
     def roms_directory(self, system: System) -> str | None:
@@ -331,6 +334,9 @@ class EmuDeck(Frontend):
         return "EmuDeck"
 
     def bios_directory(self, system: System) -> str | None:
+        if system == System.NINTENDO_GAMECUBE:
+            return "\$HOME/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/GC"
+
         return str(PurePosixPath(self._destination_dir) / "Emulation" / "bios")
 
     def roms_directory(self, system: System) -> str | None:
@@ -406,13 +412,16 @@ class EsDe(Frontend):
         return "ES-DE"
 
     def bios_directory(self, system: System) -> str | None:
+        if system == System.NINTENDO_GAMECUBE:
+            return str(PurePosixPath(self._destination_dir) / "GC")
+
         return str(PurePosixPath(self._destination_dir) / "BIOS")
 
     def roms_directory(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return str(PurePosixPath(self._destination_dir) / "ES-DE ROMs" / subdir)
+        return str(PurePosixPath(self._destination_dir) / "ROMs" / subdir)
 
     def source_scraped_media_dir(self, system: System, source_config: "SourceConfig") -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
@@ -593,7 +602,7 @@ class NextUI(MinUI):
     @property
     def name(self) -> str:
         return "NextUI"
-    
+
 
 class Rocknix(Frontend):
     """ROCKNIX frontend (https://rocknix.org)."""
@@ -703,6 +712,16 @@ class RetroDeck(EsDe):
         if not subdir:
             return None
         return str(PurePosixPath(self._destination_dir) / "roms" / subdir)
+
+    def destination_scraped_media_dir(self, system: System) -> str | None:
+        subdir = self.ROMS_SUBDIRS.get(system)
+        if not subdir:
+            return None
+
+        if system == System.NINTENDO_GAMECUBE:
+            return str(PurePosixPath(self._destination_dir) / "saves" / "gc" / "dolphin")
+
+        return str(PurePosixPath(self._destination_dir) / "ES-DE" / "downloaded_media" / subdir)
 
     @property
     def name(self) -> str:
