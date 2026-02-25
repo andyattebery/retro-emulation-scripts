@@ -1,7 +1,7 @@
 source_bios_dir: "/mnt/storage/Games/BIOS Files"
 source_roms_dir: "/mnt/storage/Games/ROMs/Curated"
-source_batocera_scraped_media_dir: "/mnt/storage/Games/Artwork/Batocera/roms/"
-source_esde_scraped_media_dir: "/mnt/storage/Games/Artwork/ES-DE/downloaded_media"
+source_batocera_artwork_dir: "/mnt/storage/Games/Artwork/Batocera/roms/"
+source_esde_artwork_dir: "/mnt/storage/Games/Artwork/ES-DE/downloaded_media"
 remote_hostname: "nas-01"
 
 bios_subdirs:

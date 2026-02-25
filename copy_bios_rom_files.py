@@ -77,9 +77,8 @@ class SourceConfig:
         self,
         source_bios_dir: str,
         source_roms_dir: str,
-        source_batocera_art_dir: str,
-        source_batocera_scraped_media_dir: str,
-        source_esde_scraped_media_dir: str,
+        source_batocera_artwork_dir: str,
+        source_esde_artwork_dir: str,
         remote_hostname: str,
         remote_source: bool,
         bios_subdirs: dict[System, str],
@@ -87,9 +86,8 @@ class SourceConfig:
     ):
         self.source_bios_dir = source_bios_dir
         self.source_roms_dir = source_roms_dir
-        self.source_batocera_art_dir = source_batocera_art_dir
-        self.source_batocera_scraped_media_dir = source_batocera_scraped_media_dir
-        self.source_esde_scraped_media_dir = source_esde_scraped_media_dir
+        self.source_batocera_artwork_dir = source_batocera_artwork_dir
+        self.source_esde_artwork_dir = source_esde_artwork_dir
         self.remote_hostname = remote_hostname
         self._remote_source = remote_source
         self.bios_subdirs = bios_subdirs
@@ -105,9 +103,8 @@ class SourceConfig:
         return cls(
             source_bios_dir=data["source_bios_dir"],
             source_roms_dir=data["source_roms_dir"],
-            source_batocera_art_dir=data["source_batocera_art_dir"],
-            source_batocera_scraped_media_dir=data["source_batocera_scraped_media_dir"],
-            source_esde_scraped_media_dir=data["source_esde_scraped_media_dir"],
+            source_batocera_artwork_dir=data["source_batocera_artwork_dir"],
+            source_esde_artwork_dir=data["source_esde_artwork_dir"],
             remote_hostname=data["remote_hostname"],
             remote_source=remote_source,
             bios_subdirs=bios_subdirs,
@@ -135,14 +132,14 @@ class SourceConfig:
         return self._prefix(self.source_batocera_art_dir)
 
     @property
-    def batocera_scraped_media_dir(self) -> str:
+    def batocera_artwork_dir(self) -> str:
         """Batocera scraped media directory path."""
-        return self._prefix(self.source_batocera_scraped_media_dir)
+        return self._prefix(self.source_batocera_artwork_dir)
 
     @property
-    def esde_scraped_media_dir(self) -> str:
+    def esde_artwork_dir(self) -> str:
         """ES-DE scraped media directory path."""
-        return self._prefix(self.source_esde_scraped_media_dir)
+        return self._prefix(self.source_esde_artwork_dir)
 
 
 class Frontend(ABC):
@@ -258,7 +255,7 @@ class Batocera(Frontend):
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return str(PurePosixPath(source_config.source_batocera_scraped_media_dir) / subdir)
+        return str(PurePosixPath(source_config.source_batocera_artwork_dir) / subdir)
 
     def destination_scraped_media_dir(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
@@ -427,7 +424,7 @@ class EsDe(Frontend):
         subdir = self.ROMS_SUBDIRS.get(system)
         if not subdir:
             return None
-        return str(PurePosixPath(source_config.esde_scraped_media_dir) / subdir)
+        return str(PurePosixPath(source_config.esde_artwork_dir) / subdir)
 
     def destination_scraped_media_dir(self, system: System) -> str | None:
         subdir = self.ROMS_SUBDIRS.get(system)
