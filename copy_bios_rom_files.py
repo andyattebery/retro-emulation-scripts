@@ -127,11 +127,6 @@ class SourceConfig:
         return self._prefix(self.source_roms_dir)
 
     @property
-    def batocera_art_dir(self) -> str:
-        """Batocera art directory path."""
-        return self._prefix(self.source_batocera_art_dir)
-
-    @property
     def batocera_artwork_dir(self) -> str:
         """Batocera scraped media directory path."""
         return self._prefix(self.source_batocera_artwork_dir)
@@ -332,7 +327,7 @@ class EmuDeck(Frontend):
 
     def bios_directory(self, system: System) -> str | None:
         if system == System.NINTENDO_GAMECUBE:
-            return "\$HOME/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/GC"
+            return "$HOME/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/GC"
 
         return str(PurePosixPath(self._destination_dir) / "Emulation" / "bios")
 
